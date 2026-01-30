@@ -8,6 +8,18 @@ body {
     font-family: "Calluna", serif;
 }
 
+.logo {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 400px; 
+    height: auto;
+    margin-bottom: 20px;
+    
+}
+
+
 .brand-title {
  position: fixed;
  font-family: "Comic Sans Ms", cursive;
@@ -101,4 +113,5 @@ text-decoration: underline;
     font-weight: bold;
     text-decoration: none;
 }
+
 

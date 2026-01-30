@@ -1,0 +1,134 @@
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  height: 100vh;
+  background-color: #f1ecfa;
+  position: relative;
+}
+
+.top-bar {
+  background-color: #d05ce7;
+  height: 100px;
+  background-image: url(../images/template.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  color: white;
+  padding-left: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center; 
+  text-align: center;
+}
+
+.name {
+  font-family: "Comic Sans MS", cursive, sans-serif;
+  font-size: 20px;
+}
+
+.btn-employee {
+  font-family: "Comic Sans MS", cursive, sans-serif;
+  margin-left: auto;
+  margin-right: 20px ;
+  background-color : #43cacc;
+  color: rgb(255, 255, 255);
+  border: none;
+  padding: 8px 25px;
+  border-radius: 7px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 15px;
+  font-size: bold;
+  transition: background-color 1s ,
+  color 1s;
+}
+
+.btn-employee:hover {
+  background-color: white;
+  color: #2ec4c7;
+}
+
+.btn-employee:active{
+  opacity: 0.8;
+}
+table {
+  width: 100%;
+  border-spacing: 0;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 20px;
+
+}
+
+th, td {
+  border: 1px solid #e0b8de;
+  padding: 10px;
+  background-color: #ffffff;
+}
+
+th {
+  background: #e9e0e9;
+}
+
+.custom-cs-button {
+  position: fixed;
+  bottom: 20px;
+  right: 27px;
+  display: flex;
+  align-items: center;
+  background: black;
+  color: white;
+  border: 2px solid #004466;
+  border-radius: 50px; 
+  padding: 8px 8px; 
+  font-family: 'Arial', sans-serif;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+
+.icon-circle {
+  background-color: black;
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 15px;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+}
+
+.icon-circle img {
+  width: 30px;
+  height: 30px;
+  filter: invert(1); 
+}
+
+.button-text {
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 1.1;
+  text-align: left;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+
+.custom-cs-button:hover {
+
+  filter: brightness(1.1);
+  transform: translateY(-2px);
+  transition: 0.2s;
+  opacity: 0.8;
+}
+
+.logo {
+  width: auto;
+  height: 100px;
+  transform: scale(1.2); /* 1.1, 1.2, 1.3 */
+  transform-origin: center;
+  display: flex;
+  align-items: center;
+  justify-content: center; 
+  text-align: center;
+  margin-top: 25px;
+}
