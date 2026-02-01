@@ -27,3 +27,8 @@ let users = [
     message.style.color = "red";
   }
 });
+
+const closeBtn = document.querySelector(".jsCloseBtn");
+closeBtn.addEventListener("click", function() {
+     window.location.href = "Custo.html";
+}); 

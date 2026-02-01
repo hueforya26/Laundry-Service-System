@@ -186,6 +186,21 @@ th {
 
 }
 
+.offContainer {
+  display: none;
+}
+
+#containerModal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(8px);
+  justify-content: center;
+  align-items: center;
+  z-index: 200;
+}
+
+
 .brand-header {
   text-align: center;
   margin-bottom: 10px;
@@ -239,6 +254,7 @@ input, textarea, select {
 
 textarea {
   height: 120px;
+  resize: none;
 }
 
 button {
