@@ -26,6 +26,7 @@ body {
   text-align: center;
 }
 
+
 .name {
   font-family: "Comic Sans MS", cursive, sans-serif;
   font-size: 20px;
@@ -163,6 +164,27 @@ th {
   opacity: 1;
 }
 
+.containerModalShadow {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(8px);
+  display: flex;
+  place-items: center;
+  z-index: 200;
+}
+
+.modalContent {
+  animation: bounceSoft 0.8s ease forwards;
+}
+
+@keyframes bounceSoft {
+  0%   {transform:translateY(-20px) scale(0.95);opacity:0;}
+  60%  {transform:translateY(5px) scale(1.02);opacity:1;}
+  100% {transform:translateY(0) scale(1);}
+}
+
+
 .container {
   position: relative;
   max-width: 600px;
@@ -183,23 +205,20 @@ th {
   position:absolute;
   top: 10%;
   left: 35%;
-
+   animation: bounceSoft 0.8s ease;
 }
 
-.offContainer {
+@keyframes bounceSoft {
+  0% { transform: translateY(-20px) scale(0.95); opacity: 0; }
+}
+
+.offContainer{
   display: none;
 }
 
-#containerModal {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.7);
-  backdrop-filter: blur(8px);
-  justify-content: center;
-  align-items: center;
-  z-index: 200;
+.offShadow{
+  display: none;
 }
-
 
 .brand-header {
   text-align: center;

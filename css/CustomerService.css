@@ -44,6 +44,15 @@ body {
   opacity: 1;
 }
 
+#containerModal{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(8px);
+  justify-content: center;
+  align-items: center;
+  z-index: 200;
+}
 .container {
   position: relative;
   max-width: 600px;
@@ -61,6 +70,12 @@ body {
   box-sizing: border-box;
   border-radius: 20px;
   box-shadow: 0 0 5px rgba(172,172,172,0.5);
+  animation: fadeIn 1s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 

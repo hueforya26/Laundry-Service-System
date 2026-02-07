@@ -30,5 +30,5 @@ let users = [
 
 const closeBtn = document.querySelector(".jsCloseBtn");
 closeBtn.addEventListener("click", function() {
-     window.location.href = "Custo.html";
+     window.location.href = "Customer-page.html";
 }); 

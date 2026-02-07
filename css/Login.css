@@ -26,22 +26,34 @@ body {
     width: 400px; 
     height: auto;
     margin-bottom: 20px;
-    
+   animation: fadeIn 1.5s ease;
 }
 
-
-
-.login-box {
-    width: 350px;
-    padding: 30px;
-    background: rgba(255, 255, 255, 0.35);
-    backdrop-filter: blur(10px);
-    color: #4a3c69;
-    border-radius: 15px;
-    text-align: center;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.43);
-    opacity: 0.8;
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 0.8; }
 }
+
+ .login-box {
+  width: 350px;
+  padding: 30px;
+  background: rgba(255,255,255,0.35);
+  backdrop-filter: blur(12px);
+  color: #4a3c69;
+  border-radius: 18px;
+  text-align: center;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+  opacity: 0;
+  transform: translateY(-20px) scale(0.95);
+  animation: smoothEpic 0.9s ease forwards;
+}
+
+@keyframes smoothEpic {
+  0%   {opacity:0; transform:translateY(-20px) scale(0.95);}
+  50%  {opacity:1; transform:translateY(5px) scale(1.02);}
+  100% {opacity:1; transform:translateY(0) scale(1);}
+}
+
 
 .login-box h2 {
     margin-bottom: 20px;
