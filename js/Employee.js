@@ -12,6 +12,25 @@ document.addEventListener("DOMContentLoaded", () => {
   const priceInput = document.getElementById("price");
   const gmailInput = document.getElementById("gmail");
 
+  let currentSearch = "";
+
+  searchInput.addEventListener("input", () => {
+    currentSearch = searchInput.value.toLowerCase();
+    applySearch();
+    clearBtn.style.display = currentSearch ? "block" : "none";
+  });
+
+
+
+  openBtn.onclick = () => {
+    clearInputs();
+    modal.style.display = "flex";
+  };
+
+  closeBtn.onclick = () => {
+    modal.style.display = "none";
+  };
+
   function clearInputs() {
     nameInput.value = "";
     serviceInput.value = "";
@@ -20,115 +39,98 @@ document.addEventListener("DOMContentLoaded", () => {
     gmailInput.value = "";
   }
 
-  function searchCustomer() {
-    const input = document.getElementById("searchInput");
-    const filter = input.value.toLowerCase();
-    const table = document.getElementById("customerTable");
-    const rows = table.getElementsByTagName("tr");
-    const clearBtn = document.querySelector(".clear-btn");
-
-    clearBtn.style.display = input.value ? "block" : "none";
-
-    for (let i = 1; i < rows.length; i++) {
-      const cells = rows[i].getElementsByTagName("td");
-      let found = false;
-      for (let j = 0; j < cells.length; j++) {
-        const textValue = cells[j].textContent || cells[j].innerText;
-        if (textValue.toLowerCase().includes(filter)) {
-          found = true;
-          break;
-        }
-      }
-      rows[i].style.display = found ? "" : "none";
-    }
-  }
-
-  function clearSearch() {
-    const input = document.getElementById("searchInput");
-    input.value = "";
-    searchCustomer();
-    input.focus();
-  }
-
-  const searchInput = document.getElementById("searchInput");
-  searchInput.addEventListener("input", searchCustomer);
-  searchInput.addEventListener("keydown", (event) => {
-    if (event.key === "Enter") {
-      searchCustomer();
-    }
-  });
-
-  const clearBtn = document.querySelector(".clear-btn");
-  clearBtn.addEventListener("click", clearSearch);
-
-  openBtn.onclick = () => {
-    clearInputs();
-    modal.style.display = "flex";
-  };
-  closeBtn.onclick = () => {
-    clearInputs();
-    modal.style.display = "none";
-  };
-
-
-
   saveBtn.onclick = () => {
-
     if (!nameInput.value || !serviceInput.value || !kiloInput.value || !priceInput.value || !gmailInput.value) {
       alert("Please fill all fields");
       return;
     }
 
-    const row = document.createElement("tr");
-
-    row.innerHTML = `
-      <td>${nameInput.value}</td>
-      <td>${serviceInput.value}</td>
-      <td>${kiloInput.value}</td>
-      <td>₱ ${priceInput.value}</td>
-      <td>${gmailInput.value}</td>
-
-      <td>
-        <select class="status pending">
-          <option value="pending" selected>Pending</option>
-          <option value="washing">Washing</option>
-          <option value="drying">Drying</option>
-          <option value="ready">Ready</option>
-          <option value="claimed">Claimed</option>
-        </select>
-      </td>
-
-      <td>
-        <button class="btn-done">✔ Done</button>
-        <button class="btn-delete">🗑 Delete</button>
-      </td>
-    `;
-
-    const status = row.querySelector(".status");
-    const doneBtn = row.querySelector(".btn-done");
-    const deleteBtn = row.querySelector(".btn-delete");
-
-    status.addEventListener("change", () => {
-      status.className = "status " + status.value;
-      doneBtn.disabled = (status.value === "claimed");
-    });
-
-    doneBtn.onclick = () => {
-      status.value = "ready";
-      status.className = "status ready";
-    };
-
-    deleteBtn.onclick = () => {
-      row.remove();
-    };
-
-    tableBody.appendChild(row);
-
-    modal.style.display = "none";
-
-    nameInput.value = serviceInput.value =
-    kiloInput.value = priceInput.value =
-    gmailInput.value = "";
+    fetch("http://localhost:3000/addCustomer", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: nameInput.value,
+        service: serviceInput.value,
+        kilo: kiloInput.value,
+        price: priceInput.value,
+        email: gmailInput.value
+      })
+    })
+    .then(() => {
+      modal.style.display = "none";
+      clearInputs();
+      loadCustomers();
+    })
+    .catch(err => console.error("Save error:", err));
   };
 
+  function loadCustomers() {
+    fetch("http://localhost:3000/customers")
+      .then(res => res.json())
+      .then(data => {
+        tableBody.innerHTML = "";
+
+        data.forEach(c => {
+          const row = document.createElement("tr");
+
+          row.innerHTML = `
+            <td>${c.name}</td>
+            <td>${c.service}</td>
+            <td>${c.kilo}</td>
+            <td>₱ ${c.price}</td>
+            <td>${c.email}</td>
+            <td>
+              <select class="status-select">
+                <option value="Pending" ${c.status === "Pending" ? "selected" : ""}>Pending</option>
+                <option value="Ready to pick up" ${c.status === "Ready to pick up" ? "selected" : ""}>Ready to pick up</option>
+                <option value="Completed" ${c.status === "Completed" ? "selected" : ""}>Completed</option>
+              </select>
+            </td>
+            <td>
+              <button class="btn-delete">Delete</button>
+            </td>
+          `;
+
+          row.querySelector(".status-select").onchange = () => {
+            updateStatus(c.id, row.querySelector(".status-select").value);
+          };
+
+          row.querySelector(".btn-delete").onclick = () => {
+            if (!confirm("Are you sure you want to delete this record?")) return;
+
+            fetch(`http://localhost:3000/deleteCustomer/${c.id}`, {
+              method: "DELETE"
+            })
+            .then(res => res.json())
+            .then(() => loadCustomers())
+            .catch(err => console.error("Delete error:", err));
+          };
+
+          tableBody.appendChild(row);
+
+          applySearch();
+        });
+      });
+  }
+
+  function applySearch() {
+    const rows = tableBody.querySelectorAll("tr");
+    rows.forEach(row => {
+      row.style.display = row.innerText.toLowerCase().includes(currentSearch)
+        ? ""
+        : "none";
+    });
+  }
+
+
+  function updateStatus(id, status) {
+    fetch(`http://localhost:3000/updateStatus/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status })
+    })
+    .then(() => loadCustomers());
+  }
+
+  loadCustomers();
 });
