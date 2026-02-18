@@ -5,17 +5,22 @@
 }
 
 body {
+  margin: 0;
+  min-height: 100vh;
+  background-image: url("../images/CloudBackground.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   font-family: Arial, Helvetica, sans-serif;
   margin: 0;
   height: 100vh;
-  background-color: #f1ecfa;
   position: relative;
 }
 
 .top-bar {
-  background-color: #d05ce7;
+  background-color: #81428d;
   height: 100px;
-  background-image: url(../images/template.jpg);
   background-repeat: no-repeat;
   background-size: cover;
   color: white;
@@ -68,13 +73,15 @@ table {
 }
 
 th, td {
-  border: 1px solid #e0b8de;
+  border: 1px solid #eee3ed;
   padding: 10px;
-  background-color: #ffffff;
+  background-color: #81428d;
 }
 
 th {
-  background: #e9e0e9;
+  background: #81428d;
+  color: white;
+   font-family: "Comic Sans MS", cursive, sans-serif;
 }
 
 .custom-cs-button {
@@ -120,7 +127,7 @@ th {
   width: auto;
   line-height: 1.1;
   text-align: left;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0);
 }
 
 
@@ -130,11 +137,12 @@ th {
   transform: translateY(-2px);
   transition: 0.2s;
   opacity: 0.8;
+
 }
 
 .logo {
   width: auto;
-  height: 100px;
+  height: 140px;
   transform: scale(1.2);
   transform-origin: center;
   display: flex;
