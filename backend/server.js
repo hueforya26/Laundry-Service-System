@@ -3,24 +3,30 @@ const mysql = require("mysql2");
 const cors = require("cors");
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
 
 const db = mysql.createConnection({
-  host: "192.168.0.110",
-  user: "projectuser",
-  password: "jb123",
-  database: "laundry_system"
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: process.env.DB_PORT,
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
+
+
 
 db.connect(err => {
   if (err) {
     console.error("❌ Database connection failed:", err);
     return;
   }
-  console.log("✅ Connected to MySQL database");
+  console.log("✅ Connected to Railway database");
 });
 
 app.get("/customers", (req, res) => {
@@ -49,13 +55,14 @@ app.post("/addCustomer", (req, res) => {
     return res.status(400).json({ message: "Missing fields" });
   }
 
-  const sql = `
-    INSERT INTO customers
-    (name, service, kilo, price, email, status, created_at)
-    VALUES (?, ?, ?, ?, ?, 'Pending', NOW())
-  `;
+const sql = `
+INSERT INTO customers 
+(name, email, service, price, kilo, created_at, status)
+VALUES (?, ?, ?, ?, ?, NOW(), 'Pending')
+`;
 
-  db.query(sql, [name, service, kilo, price, email], (err, result) => {
+
+  db.query(sql, [name, email, service, price, kilo], (err, result) => {
     if (err) {
       console.error(err);
       return res.status(500).json({ message: "Insert failed" });
