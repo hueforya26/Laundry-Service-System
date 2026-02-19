@@ -131,6 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const saveBtn = document.getElementById("saveBtn");
 
   saveBtn.onclick = () => {
+    e.preventDefault();
     if (!nameInput.value || !serviceInput.value || !kiloInput.value || !priceInput.value || !numberInput.value) {
       alert("Please fill all fields");
       return;
@@ -157,57 +158,71 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   function loadCustomers() {
-    fetch("https://laundrybackend-production-3c03.up.railway.app/customers")
-      .then(res => res.json())
-      .then(data => {
-        tableBody.innerHTML = "";
-
-        data.forEach(c => {
-          const row = document.createElement("tr");
-
-          row.innerHTML = `
-            <td>${c.name}</td>
-            <td>${c.service}</td>
-            <td>${c.kilo}</td>
-            <td>₱ ${c.price}</td>
-            <td>${c.email}</td>
-            <td>
-              <select class="status-select status">
-                <option class="status pending" value="Pending" ${c.status === "Pending" ? "selected" : ""}>Pending</option>
-                <option class="status ready" value="Ready to pick up" ${c.status === "Ready to pick up" ? "selected" : ""}>Ready to pick up</option>
-                <option class="status claimed" value="Completed" ${c.status === "Completed" ? "selected" : ""}>Completed</option>
-              </select>
-            </td>
-            <td>
-              <button class="btn-delete">Delete</button>
-            </td>
-          `;
-
-          const statusSelect = row.querySelector(".status-select");
-            applyStatusColor(statusSelect);
-
-            statusSelect.onchange = () => {
-              applyStatusColor(statusSelect);
-              updateStatus(c.id, statusSelect.value);
-            };
-
-          row.querySelector(".btn-delete").onclick = () => {
-            if (!confirm("Are you sure you want to delete this record?")) return;
-
-            fetch(`https://laundrybackend-production-3c03.up.railway.app/deleteCustomer/${c.id}`, {
-              method: "DELETE"
-            })
-            .then(res => res.json())
-            .then(() => loadCustomers())
-            .catch(err => console.error("Delete error:", err));
-          };
-
-          tableBody.appendChild(row);
-
- 
-        });
+  fetch("https://laundrybackend-production-3c03.up.railway.app/customers")
+    .then(res => {
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json();
+    })
+    .then(data => {
+      console.log("📥 Customers data:", data); // DEBUG: see what we get
+      
+      // SAFETY CHECK: ensure data is an array
+      if (!Array.isArray(data)) {
+        console.error("❌ Data is not an array:", data);
+        tableBody.innerHTML = "<tr><td colspan='7'>Error loading data</td></tr>";
+        return;
+      }
+      
+      tableBody.innerHTML = "";
+      
+      data.forEach(c => {
+        // ... rest of your code stays the same
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${c.name}</td>
+          <td>${c.service}</td>
+          <td>${c.kilo}</td>
+          <td>₱ ${c.price}</td>
+          <td>${c.email}</td>
+          <td>
+            <select class="status-select status">
+              <option class="status pending" value="Pending" ${c.status === "Pending" ? "selected" : ""}>Pending</option>
+              <option class="status ready" value="Ready to pick up" ${c.status === "Ready to pick up" ? "selected" : ""}>Ready to pick up</option>
+              <option class="status claimed" value="Completed" ${c.status === "Completed" ? "selected" : ""}>Completed</option>
+            </select>
+          </td>
+          <td>
+            <button class="btn-delete">Delete</button>
+          </td>
+        `;
+        
+        const statusSelect = row.querySelector(".status-select");
+        applyStatusColor(statusSelect);
+        
+        statusSelect.onchange = () => {
+          applyStatusColor(statusSelect);
+          updateStatus(c.id, statusSelect.value);
+        };
+        
+        row.querySelector(".btn-delete").onclick = () => {
+          if (!confirm("Are you sure you want to delete this record?")) return;
+          
+          fetch(`https://laundrybackend-production-3c03.up.railway.app/deleteCustomer/${c.id}`, {
+            method: "DELETE"
+          })
+          .then(res => res.json())
+          .then(() => loadCustomers())
+          .catch(err => console.error("Delete error:", err));
+        };
+        
+        tableBody.appendChild(row);
       });
-  }
+    })
+    .catch(err => {
+      console.error("❌ Load customers error:", err);
+      tableBody.innerHTML = "<tr><td colspan='7'>Error loading data</td></tr>";
+    });
+}
 
   function applyStatusColor(select) {
   select.classList.remove("pending", "ready", "completed");
