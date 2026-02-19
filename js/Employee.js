@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const serviceInput = document.getElementById("service");
   const kiloInput = document.getElementById("kilo");
   const priceInput = document.getElementById("price");
-  const gmailInput = document.getElementById("gmail");
+  const numberInput = document.getElementById("number");
 
   const searchInput = document.getElementById("searchInput");
 
@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
     serviceInput.value = "";
     kiloInput.value = "";
     priceInput.value = "";
-    gmailInput.value = "";
+    numberInput.value = "";
   }
 
   function searchCustomer() {
@@ -66,20 +66,32 @@ document.addEventListener("DOMContentLoaded", () => {
     if (parseFloat(priceInput.value) > 100000) priceInput.value = 100000;
   });
 
+  numberInput.addEventListener('input', () => {
+    let value = numberInput.value.replace(/\D/g, '');
+
+    if (value.length <= 4) {
+      numberInput.value = value;
+    } else if (value.length <= 7) {
+      numberInput.value = value.replace(/^(\d{4})(\d+)/, '$1-$2');
+    } else {
+      numberInput.value = value.replace(/^(\d{4})(\d{3})(\d+)/, '$1-$2-$3');
+    }
+  });
+
   searchInput.addEventListener("input", searchCustomer);
   searchInput.addEventListener("keydown", (event) => {
     if (event.key === "Enter") searchCustomer();
   });
 
   const sampleData = [
-    { id: 1, name: "Customer A", service: "Wash", kilo: 5, price: 250, contact: "a@gmail.com", status: "Done", time: "2026-01-10" },
-    { id: 2, name: "Customer B", service: "Dry Clean", kilo: 3, price: 300, contact: "b@gmail.com", status: "Done", time: "2026-02-15" },
-    { id: 3, name: "Customer C", service: "Iron", kilo: 2, price: 150, contact: "c@gmail.com", status: "Done", time: "2026-03-20" },
-    { id: 4, name: "Customer D", service: "Wash", kilo: 4, price: 200, contact: "d@gmail.com", status: "Done", time: "2026-02-05" },
-    { id: 5, name: "Customer E", service: "Wash", kilo: 3, price: 180, contact: "e@gmail.com", status: "Done", time: "2026-07-12" },
-    { id: 6, name: "Customer F", service: "Iron", kilo: 1, price: 100, contact: "f@gmail.com", status: "Done", time: "2026-07-20" },
-    { id: 7, name: "Customer G", service: "Dry Clean", kilo: 2, price: 250, contact: "g@gmail.com", status: "Done", time: "2026-06-18" },
-    { id: 8, name: "Customer H", service: "Wash", kilo: 5, price: 300, contact: "h@gmail.com", status: "Done", time: "2026-05-08" }
+    { id: 1, name: "John", service: "Wash", kilo: 5, price: 250, contact: "09736881137", status: "Done", time: "2026-01-10" },
+    { id: 2, name: "Evan", service: "Dry Clean", kilo: 3, price: 300, contact: "09229844110", status: "Done", time: "2026-02-15" },
+    { id: 3, name: "Zeus", service: "Iron", kilo: 2, price: 150, contact: "09912779934", status: "Done", time: "2026-03-20" },
+    { id: 4, name: "Patrick", service: "Wash", kilo: 4, price: 200, contact: "09700437593", status: "Done", time: "2026-02-05" },
+    { id: 5, name: "Anna", service: "Wash", kilo: 3, price: 180, contact: "09833473261", status: "Done", time: "2026-07-12" },
+    { id: 6, name: "Joy", service: "Iron", kilo: 1, price: 100, contact: "09476199162", status: "Done", time: "2026-07-20" },
+    { id: 7, name: "Bruno", service: "Dry Clean", kilo: 2, price: 250, contact: "09389922843", status: "Done", time: "2026-06-18" },
+    { id: 8, name: "Cherry", service: "Wash", kilo: 5, price: 300, contact: "09331982335", status: "Done", time: "2026-05-08" }
   ];
 
   const monthlySales = {};
@@ -119,7 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const saveBtn = document.getElementById("saveBtn");
 
   saveBtn.onclick = () => {
-    if (!nameInput.value || !serviceInput.value || !kiloInput.value || !priceInput.value || !gmailInput.value) {
+    if (!nameInput.value || !serviceInput.value || !kiloInput.value || !priceInput.value || !numberInput.value) {
       alert("Please fill all fields");
       return;
     }
@@ -132,8 +144,9 @@ document.addEventListener("DOMContentLoaded", () => {
         service: serviceInput.value,
         kilo: kiloInput.value,
         price: priceInput.value,
-        email: gmailInput.value
+        email: numberInput.value
       })
+      
     })
     .then(() => {
       modal.style.display = "none";
@@ -234,7 +247,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   loadCustomers();
-  setInterval(() => {
+    setInterval(() => {
     loadCustomers();
-  }, 1000);
+  }, 5000);
 });

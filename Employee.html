@@ -17,8 +17,8 @@
     </nav>
   </header>
 
-  <section id="ModalOverlay">
-    <article class="modalBox form">
+  <div id="ModalOverlay">
+    <form class="modalBox form">
       <h3>Add Customer</h3>
       <button id="closeModal" class="btn-close">×</button>
 
@@ -31,28 +31,28 @@
       
       <input type="text" inputmode="decimal" id="kilo" placeholder="Kilo">
       <input type="text" inputmode="decimal" id="price" placeholder="Price">
-      <input type="text" inputmode="email" id="gmail" placeholder="Gmail / Number">
+      <input type="text" inputmode="number" id="number" placeholder="Number">
 
       <div class="btn-Modal">
         <button id="saveBtn" class="btn-save">Save</button>
       </div>
-    </article>
-  </section>
+    </form>
+  </div>
 
   <main>
-    <div id="CustomerRecord">
-      <section class="txtSearch">
+    <section id="CustomerRecord">
+      <article class="txtSearch">
         <div class="topBar">
-          <div class="searchBar">
+          <form class="searchBar">
             <span class="search-icon">🔍</span>
             <input type="text" id="searchInput" placeholder="Search customer name..."/>
-          </div>
+          </form>
 
           <button id="openModal" class="btn-add">+ Add Customer</button>
         </div>
-      </section>
+      </article>
 
-      <div class="table-container">
+      <article class="table-container">
         <table class="employeeBody" id="customerTable">
           <thead>
             <tr>
@@ -60,15 +60,15 @@
               <th>Type of Service</th>
               <th>Kilo</th> 
               <th>Price</th>
-              <th>Gmail / Number</th>
+              <th>Number</th>
               <th>Status</th>
               <th>Action</th>
             </tr>
           </thead>
           <tbody></tbody>
         </table>
-      </div>
-    </div>
+      </article>
+    </section>
     
     <section id="monthlySales" class="salesGraph" style="display:none;">
       <h2>Monthly Sales</h2>

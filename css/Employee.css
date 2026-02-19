@@ -247,11 +247,20 @@ th {
   text-align: center;
   display: block;
   margin: 0 auto;
+  position: relative;
+  z-index: 1;
 }
 
 .status.pending { background: #fde68a; color: #92400e; }
 .status.ready   { background: #bbf7d0; color: #065f46; }
 .status.claimed { background: #a5d6a7; color: #1b4332; }
+
+select.status {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  border: none;
+} 
 
 .btn-done {
   background: #2ea44f;
@@ -282,13 +291,6 @@ button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
-
-select.status {
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  border: none;
-} 
 
 .table-container {
   max-height: calc(8 * 50px + 40px);
