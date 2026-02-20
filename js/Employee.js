@@ -276,3 +276,36 @@ document.addEventListener("DOMContentLoaded", () => {
     loadCustomers();
   }, 5000);
 });
+const modalLogin = document.getElementById("modalLogin");
+const openLogin = document.getElementById("salesLink");
+const loginBtn = document.querySelector(".login");
+const cancelBtn = document.querySelector(".cancel");
+const passwordInput = document.getElementById("adminPassword");
+
+function clearloginInputs()  {
+  passwordInput.value = "";
+}
+
+openLogin.onclick =() => {
+  clearloginInputs();
+  modalLogin.style.display = "flex";
+};
+
+cancelBtn.onclick =()=>{
+  clearloginInputs();
+  modalLogin.style.display = "none";
+};
+
+const pass = "admin123";
+loginBtn.addEventListener("click", function(e) {
+  e.preventDefault();
+
+  
+    if (passwordInput.value === pass) {
+      document.getElementById("CustomerRecord").style.display ="none";
+      document.getElementById("modalLogin").style.display ="none";
+      document.getElementById("monthlySales").style.display="block";
+    } else{
+      alert("Incorrect Password!");
+    }
+});

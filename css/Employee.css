@@ -494,3 +494,89 @@ tbody tr:nth-child(even) td {
   background: #cfa7d8;
   border-radius: 10px;
 }
+
+#modalLogin {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 300;
+}
+
+.admin-login {
+  width: 300px;
+  padding:  30px;
+  border-radius: 16px;
+  background: rgba(200, 182, 226, 0.85);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+}
+
+.admin-login h4 { 
+  opacity: 0.9;
+  font-size: 30px;
+  color: #610e72;
+}
+
+
+.description { 
+  text-align: center;
+}
+
+.input-box {
+  background: rgba(255,255,255,0.3);
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.input-box input {
+  border: none;
+  outline: none;
+  background: transparent;
+  width: 100%;
+  color: black;
+}
+
+.input-box:has(input:focus),
+.input-box:has(input:active) {
+  border: 1px solid black;
+  box-shadow: 0 0 5px rgba(0,0,0,0.3);
+}
+
+.btns {
+  display: flex;
+  gap: 10px;
+}
+
+.btns button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.cancel {
+background-color: rgba(255,255,255,0.3);
+}
+
+.cancel:hover {
+  background-color: rgba(255, 255, 255, 0.6);
+  transform: scale(1.05);
+  transition: all 0.2s ease;
+}
+
+.login {
+  background: #5b5bd6;
+  color: white;
+}
+
+.login:hover {
+  background-color: #7a7af0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  transition: all 0.2s ease;
+}
