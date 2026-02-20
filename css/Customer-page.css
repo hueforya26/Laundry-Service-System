@@ -47,6 +47,7 @@ body {
   font-size: bold;
   transition: background-color 1s ,
   color 1s;
+  
 }
 
 .btn-employee:hover {
@@ -65,6 +66,64 @@ table {
   margin-top: 20px;
 
 }
+.table-section {
+  width: 95%;       
+  margin: 60px auto; 
+}
+
+.rounded-table {
+  width: 100%;      
+  border-collapse: collapse;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 17px;  
+}
+
+
+.rounded-table thead {
+  background: linear-gradient(135deg, #7b3f8c, #9c5bb3);
+  color: white;
+  font-size: 18px; 
+}
+
+.rounded-table th {
+  padding: 10px;
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+
+
+.rounded-table td {
+  padding: 20px; 
+  text-align: center;
+  font-size: 16px;
+  color: #333;
+}
+
+
+
+
+.rounded-table tbody tr:hover {
+  background-color: #f3e8f8;
+  
+}
+
+
+.rounded-table tbody tr:nth-child(even) {
+  background-color: #faf7fc;
+}
+
+.rounded-table thead tr th:first-child {
+  border-top-left-radius: 8px;
+}
+
+.rounded-table thead tr th:last-child {
+  border-top-right-radius: 8px;
+}
+
 
 th, td {
   border: 1px solid #d6a0d3;

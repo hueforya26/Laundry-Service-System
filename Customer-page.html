@@ -3,193 +3,200 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Customer Service</title>
+  <title> Customer-Page </title>
+
   <link rel="stylesheet" href="Css/Customer-page.css">
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 </head>
 
 <body>
- 
-
-
-<header class="top-bar">
-  <img 
-    class="logo" 
-    src="images/Logo.png" 
-    alt="Fresh n Klean Logo">
-
-  <button 
-    id="employeeBtn" 
-    class="btn-employee" 
-    onclick="location.href='Login.html'">
-    Employee
-  </button>
-</header>
-
-
-
-<section class="table-section">
-
-  <table id="customerTable" class="rounded-table">
-
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Number</th>
-        <th>Price</th>
-        <th>Status</th>
-      </tr>
-    </thead>
-
   
-     <tbody></tbody>
-
-  </table>
-
-</section>
-
-
-
-<button class="custom-cs-button jsCustomerBtn">
-
-  <div class="icon-circle">
+  <header class="top-bar">
     <img 
-      src="images/customer-service-icon-in-black-and-white-color-vector.jpg" 
-      alt="Customer Service Icon">
-  </div>
+      class="logo" 
+      src="images/Logo.png" 
+      alt="Fresh n Klean Logo"
+    >
 
-  <span class="button-text customerBtn">
-    Customer <br> Service
-  </span>
+    <button 
+      id="employeeBtn" 
+      class="btn-employee" 
+      onclick="location.href='Login.html'"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+        viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round"
+        class="lucide lucide-users w-5 h-5 group-hover:scale-110 transition-transform">
 
-</button>
+        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+        <circle cx="9" cy="7" r="4"></circle>
+        <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
 
-
-<div id="containerModal" class="containerModalShadow offShadow ">
-  <div class="modalContent"></div> <!--lagyan ng animation-->
-
-<section class="container offContainer containerModal">
-
-  <button class="btn-close closeBtn">&times;</button>
-
-  
-  <header class="brand-header">
-    <h1 class="brand-logo">Fresh N' Klean</h1>
+      </svg>
+      Employee
+    </button>
   </header>
 
   
-  <header class="container__header">
-    <h2>Customer Service</h2>
-  </header>
+  <section class="table-section">
 
+    <table id="customerTable" class="rounded-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Gmail / Number</th>
+          <th>Price</th>
+          <th>Status</th>
+        </tr>
+      </thead>
 
-  
-  <section class="container__body">
-
-    <form id="loginForm" class="login-form" method="POST">
-
-      
-      <div class="form-group">
-        <input
-          type="text"
-          id="customerName"
-          name="customerName"
-          class="typemodawnamemo"
-          placeholder="Enter customer name"
-          required>
-      </div>
-
-      
-      <div class="form-group">
-        <input
-          type="email"
-          name="email"
-          class="entermodawemailmo"
-          placeholder="Enter email address"
-          required>
-      </div>
-
-      
-      <div class="form-group">
-        <select 
-          id="selectConcern" 
-          name="selectConcern" 
-          class="select-concern" 
-          required>
-
-          <option value="">Select Concern Type</option>
-          <option value="order_inquiry">Order Inquiry</option>
-          <option value="product_issue">Product Issue</option>
-          <option value="payment_concern">Payment Concern</option>
-          <option value="feedback_suggestions">Feedback / Suggestions</option>
-
-        </select>
-      </div>
-
-      
-      <div class="form-group">
-        <textarea
-          name="message"
-          class="entermodawmessage"
-          placeholder="Enter your message"
-          required></textarea>
-      </div>
-
-      
-      <button type="submit" class="btn-login">
-        Submit Request
-      </button>
-
-    </form>
+    </table>
 
   </section>
-</div>
-</main>
 
+  
+  <button class="custom-cs-button jsCustomerBtn">
 
-<script src="js/Customer-page.js"></script>
+    <div class="icon-circle">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+        viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round"
+        class="lucide lucide-message-circle-question w-6 h-6 group-hover:rotate-12 transition-transform">
 
-<script>
-  (function () {
-    emailjs.init("t6MDpS7dkfS8CHno3");
-  })();
+        <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"></path>
+        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+        <path d="M12 17h.01"></path>
 
-  console.log("emailjs:", emailjs)
+      </svg>
+    </div>
 
-  const form = document.getElementById("loginForm");
+    <span class="button-text customerBtn">
+      Customer <br> Service
+    </span>
 
-  form.addEventListener("submit", function (e) {
-    e.preventDefault();
+  </button>
 
-    const customerName = form.customerName.value;
-    const email = form.email.value;
-    const selectConcern = form.selectConcern.value;
-    const message = form.message.value;
+  
+  <div id="containerModal" class="containerModalShadow offShadow">
+    <div class="modalContent"></div>
 
-    emailjs.send("service_ul5j1zt", "template_mvk3297", {
-      customer_name: customerName,
-      user_email: email,
-      concern_type: selectConcern,
-      message: message
-    })
-    .then(() => {
+    <section class="container offContainer containerModal">
 
-    return emailjs.send("service_ul5j1zt", "template_24fa3xo", {
-        to_name: customerName,
-        concern: selectConcern,
-        to_email: email
+      <button class="btn-close closeBtn">&times;</button>
+
+      <header class="brand-header">
+        <h1 class="brand-logo">Fresh N' Klean</h1>
+      </header>
+
+      <header class="container__header">
+        <h2>Customer Service</h2>
+      </header>
+
+      <section class="container__body">
+
+        <form id="loginForm" class="login-form" method="POST">
+
+          <div class="form-group">
+            <input
+              type="text"
+              id="customerName"
+              name="customerName"
+              class="typemodawnamemo"
+              placeholder="Enter customer name"
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <input
+              type="email"
+              name="email"
+              class="entermodawemailmo"
+              placeholder="Enter email address"
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <select
+              id="selectConcern"
+              name="selectConcern"
+              class="select-concern"
+              required
+            >
+              <option value="">Select Concern Type</option>
+              <option value="order_inquiry">Order Inquiry</option>
+              <option value="product_issue">Product Issue</option>
+              <option value="payment_concern">Payment Concern</option>
+              <option value="feedback_suggestions">Feedback / Suggestions</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <textarea
+              name="message"
+              class="entermodawmessage"
+              placeholder="Enter your message"
+              required
+            ></textarea>
+          </div>
+
+          <button type="submit" class="btn-login">
+            Submit Request
+          </button>
+
+        </form>
+
+      </section>
+    </section>
+  </div>
+
+  
+  <script src="js/Customer-page.js"></script>
+
+  <script>
+    (function () {
+      emailjs.init("t6MDpS7dkfS8CHno3");
+    })();
+
+    console.log("emailjs:", emailjs);
+
+    const form = document.getElementById("loginForm");
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const customerName = form.customerName.value;
+      const email = form.email.value;
+      const selectConcern = form.selectConcern.value;
+      const message = form.message.value;
+
+      emailjs.send("service_ul5j1zt", "template_mvk3297", {
+        customer_name: customerName,
+        user_email: email,
+        concern_type: selectConcern,
+        message: message
+      })
+      .then(() => {
+        return emailjs.send("service_ul5j1zt", "template_24fa3xo", {
+          to_name: customerName,
+          concern: selectConcern,
+          to_email: email
+        });
+      })
+      .then(() => {
+        alert("Request sent successfully 📩!");
+        form.reset();
+      })
+      .catch((error) => {
+        console.error("EmailJS ERROR:", error);
+        alert("Something failed. Check console (F12).");
       });
-
-    })
-    .then(() => {
-      alert("Request sent successfully 📩!");
-      form.reset();
-    })
-    .catch((error) => {
-      console.error("EmailJS ERROR:", error);
-      alert("Something failed. Check console (F12).");
     });
-  });
-</script>
+  </script>
+
 </body>
 </html>
