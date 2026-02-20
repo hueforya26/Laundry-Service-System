@@ -130,32 +130,42 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const saveBtn = document.getElementById("saveBtn");
 
-  saveBtn.onclick = () => {
+  saveBtn.onclick = (e) => {
     e.preventDefault();
-    if (!nameInput.value || !serviceInput.value || !kiloInput.value || !priceInput.value || !numberInput.value) {
-      alert("Please fill all fields");
-      return;
-    }
+  console.log("🔵 SAVE BUTTON CLICKED - LINE 1"); // ← ADD THIS
+  
+  if (!nameInput.value || !serviceInput.value || !kiloInput.value || !priceInput.value || !numberInput.value) {
+    alert("Please fill all fields");
+    return;
+  }
+  
+  console.log("🔵 Validation passed, about to fetch"); // ← ADD THIS
 
-    fetch("https://laundrybackend-production-3c03.up.railway.app/addCustomer", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name: nameInput.value,
-        service: serviceInput.value,
-        kilo: kiloInput.value,
-        price: priceInput.value,
-        email: numberInput.value
-      })
-      
+  fetch("https://laundrybackend-production-3c03.up.railway.app/addCustomer", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      name: nameInput.value,
+      service: serviceInput.value,
+      kilo: kiloInput.value,
+      price: priceInput.value,
+      email: numberInput.value
     })
-    .then(() => {
-      modal.style.display = "none";
-      clearInputs();
-      loadCustomers();
-    })
-    .catch(err => console.error("Save error:", err));
-  };
+  })
+  .then(res => {
+    console.log("🔵 Fetch response received:", res.status); // ← ADD THIS
+    return res.json();
+  })
+  .then(() => {
+    console.log("🔵 Save successful, closing modal"); // ← ADD THIS
+    modal.style.display = "none";
+    clearInputs();
+    loadCustomers();
+  })
+  .catch(err => {
+    console.error("🔴 Fetch error:", err); // ← ADD THIS
+  });
+};
 
   function loadCustomers() {
   fetch("https://laundrybackend-production-3c03.up.railway.app/customers")

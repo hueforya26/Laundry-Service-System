@@ -56,21 +56,24 @@ app.get("/customers", (req, res) => {
 app.post("/addCustomer", (req, res) => {
   const { name, service, kilo, price, email } = req.body;
 
+  console.log("📦 Received:", { name, service, kilo, price, email }); // ADD THIS
+
   if (!name || !service || !kilo || !price || !email) {
     return res.status(400).json({ message: "Missing fields" });
   }
 
   const sql = `
     INSERT INTO customers 
-    (name, email, service, price, kilo)
-    VALUES (?, ?, ?, ?, ?)
+    (name, email, service, price, kilo, created_at, status)
+    VALUES (?, ?, ?, ?, ?, NOW(), 'Pending')
   `;
-  
+
   db.query(sql, [name, email, service, price, kilo], (err, result) => {
     if (err) {
-      console.error("❌ Insert error:", err);
+      console.error("❌ Insert error:", err); // THIS WILL SHOW THE REAL ERROR
       return res.status(500).json({ message: "Insert failed", error: err.message });
     }
+    console.log("✅ Insert successful:", result);
     res.json({ message: "Customer added", id: result.insertId });
   });
 });
