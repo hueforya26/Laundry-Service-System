@@ -234,7 +234,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadCustomers();
     setInterval(() => {
     loadCustomers();
-  }, 5000);
+  }, 3000);
 
 });
 const modalLogin = document.getElementById("modalLogin");
