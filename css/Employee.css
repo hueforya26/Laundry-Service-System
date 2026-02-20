@@ -20,6 +20,7 @@ header {
       display: flex;
       align-items: center;
       justify-content: space-between;
+    
     }
 
     .logo-section {
@@ -86,7 +87,10 @@ header {
       position: relative;
       padding: 8px 0;
       transition: all 0.3s;
+      text-decoration: none;
     }
+
+    nav a
 
     nav button:hover {
       color: #6d28d9;
@@ -290,7 +294,7 @@ header {
   border: 2px solid #7c3aed;
   box-shadow: 0 8px 18px rgba(138, 92, 168, 0.15);
   background: linear-gradient(180deg, #a78bfa, #ffffff);
-  position: relative;
+  position: relative;;
 }
 
 /* TABLE */
@@ -334,9 +338,10 @@ th, td {
   max-height: calc(8 * 50px + 40px);
 
   width: 95%;          
-  max-width: 2000px;  
+  max-width: 2000px;
+  margin-left: 30px;  
 
-  margin: 40px auto;  
+  margin-top: 10px; 
 
 }
 /* BODY CELLS */
@@ -355,29 +360,7 @@ tbody tr:nth-child(even) {
   background: #fbf7fe;
 }
 
-/* ROW HOVER */
-tbody tr:hover {
-  background: #efe3f7;
-  transform: scale(1.01);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  z-index: 2;
-  position: relative;
-}
 
-/* CELL HOVER */
-td:hover {
-  background: #f3e8ff;
-}
-
-/* ACTIVE CLICK */
-tbody tr:active {
-  background: #e3d0ef;
-}
-
-/* ACTION COLUMN */
-td:last-child {
-  width: 150px;
-}
 
 /* STATUS BADGES */
 .status.pending { background: #f6e6ff; color: #7b3fa0; }
@@ -438,29 +421,7 @@ table, th, td {
   transition: all 0.25s ease;
 }
 
-/* Row hover highlight */
-tbody tr:hover td {
-  background: #f7effa;
-  transform: scale(1.01);
-}
 
-/* Slight lift effect */
-tbody tr:hover {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  z-index: 2;
-  position: relative;
-}
-
-/* Column hover effect */
-td:hover {
-  background: #efe3f5;
-}
-
-/* Header hover */
-th:hover {
-  background: #d9c6e3;
-  cursor: pointer;
-}
 
 /* Zebra stripes */
 tbody tr:nth-child(even) td {
