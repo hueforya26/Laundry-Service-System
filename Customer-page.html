@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title> Customer-Page </title>
+  <title>Fresh'N Klean - Customer Page</title>
 
   <link rel="stylesheet" href="Css/Customer-page.css">
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
@@ -11,12 +11,25 @@
 
 <body>
   
-  <header class="top-bar">
-    <img 
-      class="logo" 
-      src="images/Logo.png" 
-      alt="Fresh n Klean Logo"
-    >
+<header class="top-bar">
+
+  <div class="logo-container">
+    
+    <div class="logo-icon">
+      <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="18" height="18" rx="3"></rect>
+        <circle cx="12" cy="13" r="5"></circle>
+        <circle cx="8" cy="7" r="1"></circle>
+        <line x1="11" y1="7" x2="16" y2="7"></line>
+      </svg>
+    </div>
+
+    <div class="logo-text">
+      <h1>Fresh'N Klean</h1>
+      <p>Customer Page</p>
+    </div>
+
+  </div>
 
     <button 
       id="employeeBtn" 
@@ -40,7 +53,7 @@
   </header>
 
   
-  <section class="table-section">
+  <section class="table-section" style="overflow-y:auto; max-height:400px; scrollbar-width: thin; scrollbar-color: #a97fc3 #f0e6fa;">
 
     <table id="customerTable" class="rounded-table">
       <thead>
@@ -51,7 +64,7 @@
           <th>Status</th>
         </tr>
       </thead>
-      <tbody></tbody> <!-- Add this -->
+      <tbody></tbody> 
     </table>
 
   </section>

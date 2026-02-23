@@ -5,23 +5,24 @@
 }
 
 body {
-  
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Calluna";
   margin: 0;
   height: 100vh;
   position: relative;
+  
 }
 
 .top-bar {
-  background-color: #81428d;
   height: 100px;
   background-repeat: no-repeat;
   background-size: cover;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 20px 25px -5px rgba(183, 148, 246, 0.2);
   color: white;
   padding-left: 30px;
   display: flex;
   align-items: center;
-  justify-content: center; 
+  justify-content: space-between;
   text-align: center;
 }
 
@@ -64,12 +65,23 @@ table {
   margin-left: auto;
   margin-right: auto;
   margin-top: 20px;
+  
 
 }
 .table-section {
   width: 95%;       
   margin: 60px auto; 
 }
+
+.table-section::-webkit-scrollbar {
+  width: 8px;
+}
+
+.table-section::-webkit-scrollbar-thumb {
+  background: linear-gradient(#caa7d8, #a97fc3);
+  border-radius: 10px;
+}
+
 
 .rounded-table {
   width: 100%;      
@@ -95,16 +107,18 @@ table {
   letter-spacing: 0.5px;
 }
 
-
+.rounded-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: linear-gradient(135deg, #7b3f8c, #9c5bb3);
+}
 .rounded-table td {
   padding: 20px; 
   text-align: center;
   font-size: 16px;
   color: #333;
 }
-
-
-
 
 .rounded-table tbody tr:hover {
   background-color: #f3e8f8;
@@ -134,9 +148,9 @@ th, td {
 th {
   background: #81428d;
   color: white;
-   font-family: "Comic Sans MS", cursive, sans-serif;
+  font-family: "Calluna";
+ 
 }
-
 .custom-cs-button {
   position: fixed;
   bottom: 20px;
@@ -193,16 +207,58 @@ th {
 
 }
 
-.logo {
-  width: auto;
-  height: 140px;
-  transform: scale(1.2);
-  transform-origin: center;
+
+.logo-container {
   display: flex;
   align-items: center;
-  justify-content: center; 
-  text-align: center;
-  margin-top: 25px;
+  gap: 20px;
+  border-radius: 16px;
+  background-size: 36px;
+  
+}
+
+.logo-icon{
+background: #7c3aed;
+width: 64px;
+height: 64px;
+border-radius: 16px;
+}
+
+
+.logo-text h1 {
+  font-size: 30px;
+  font-weight: 600;
+  background: linear-gradient(to right, #7c3aed, #a78bfa, #c084fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.logo-text p {
+  font-size: 20px;
+  color: #7c3aed;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+
+.btn-employee {
+  background: #5fd0d6;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 15px;
+  font-size: 18px;
+  font-weight: 100;
+  color: white;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.btn-employee:hover {
+  background: papayawhip;
+  color: #5fd0d6;
 }
 
 .overlay {  
