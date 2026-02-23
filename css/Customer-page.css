@@ -9,7 +9,7 @@ body {
   margin: 0;
   height: 100vh;
   position: relative;
-  
+  background: url(../images/CloudBackground.png)
 }
 
 .top-bar {
@@ -98,31 +98,28 @@ table {
 .rounded-table thead {
   background: linear-gradient(135deg, #7b3f8c, #9c5bb3);
   color: white;
-  font-size: 18px; 
-}
-
-.rounded-table th {
-  padding: 10px;
-  text-align: center;
-  letter-spacing: 0.5px;
 }
 
 .rounded-table thead th {
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 20;
   background: linear-gradient(135deg, #7b3f8c, #9c5bb3);
+  color: white;
+}
+
+.rounded-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: linear-gradient(135deg, #7b3f8c, #9c5bb3);
+  color: white;
 }
 .rounded-table td {
   padding: 20px; 
   text-align: center;
   font-size: 16px;
   color: #333;
-}
-
-.rounded-table tbody tr:hover {
-  background-color: #f3e8f8;
-  
 }
 
 
@@ -138,19 +135,17 @@ table {
   border-top-right-radius: 8px;
 }
 
-
-th, td {
+td {
   border: 1px solid #d6a0d3;
   padding: 10px;
   background-color: white;
 }
 
 th {
-  background: #81428d;
-  color: white;
-  font-family: "Calluna";
- 
+  border: 1px solid #d6a0d3;
+  padding: 10px;
 }
+
 .custom-cs-button {
   position: fixed;
   bottom: 20px;
@@ -441,27 +436,31 @@ button:hover {
 .default-select {
   color: rgba(255, 255, 255, 0);
 }
-.btn-close {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 30px;
-  height: 30px;
-  background: none;
-  color: rgb(19, 19, 19);
-  border: none;
-  border-radius: 50%;
-  font-weight: bold;
-  font-size: 30px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.closeBtn {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+    border-radius: 5px;
+    border: none;
+    background: none;
+    font-size: 35px;
+    font-weight: bold;
+    cursor: pointer;
+    color: rgb(0, 0, 0);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform-origin: center;
+    transition: transform 0.5s ease-in-out; 
 }
 
-.btn-close:hover{
-  background-color: rgba(172, 171, 171, 0.611);
+.closeBtn:hover {
+    transform:rotate(160deg)
 }
+
 @media (max-width: 600px) {
   .container {
     width: 90%;

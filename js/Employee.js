@@ -167,25 +167,33 @@ document.addEventListener("DOMContentLoaded", () => {
             <td>${c.email}</td>
             
             <td>
-            
-              <select class="status-select status">
-                <option class="status pending" value="Pending" ${c.status === "Pending" ? "selected" : ""}>Pending</option>
-                <option class="status ready" value="Ready to pick up" ${c.status === "Ready to pick up" ? "selected" : ""}>Ready to pick up</option>
-                <option class="status claimed" value="Completed" ${c.status === "Completed" ? "selected" : ""}>Completed</option>
-              </select>
+              <div class="status-badge ${
+                c.status === "Pending" ? "pending" :
+                c.status === "Ready to pick up" ? "ready" :
+                "claimed"
+              }">
+                <span class="dot"></span>
+
+                <select class="status-select">
+                  <option value="Pending" ${c.status === "Pending" ? "selected" : ""}>Pending</option>
+                  <option value="Ready to pick up" ${c.status === "Ready to pick up" ? "selected" : ""}>Ready to pick up</option>
+                  <option value="Completed" ${c.status === "Completed" ? "selected" : ""}>Completed</option>
+                </select>
+              </div>
             </td>
-            <td>
-              <button class="btn-delete">Delete</button>
+            <td class="trash">
+              <button class="btn-delete">
+                <svg class="icon" viewBox="0 0 24 24" fill="none">
+                  <path d="M4 7h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                  <path d="M9 7V4h6v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                  <path d="M10 11v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                  <path d="M14 11v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                  <path d="M6 7l1 13h10l1-13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                Delete
+              </button>
             </td>
           `;
-
-          const statusSelect = row.querySelector(".status-select");
-            applyStatusColor(statusSelect);
-
-            statusSelect.onchange = () => {
-              applyStatusColor(statusSelect);
-              updateStatus(c.id, statusSelect.value);
-            };
 
           row.querySelector(".btn-delete").onclick = () => {
             if (!confirm("Are you sure you want to delete this record?")) return;
@@ -199,23 +207,27 @@ document.addEventListener("DOMContentLoaded", () => {
           };
 
           tableBody.appendChild(row);
+          const statusSelect = row.querySelector(".status-select");
+          const badge = statusSelect.closest(".status-badge");
 
- 
+          statusSelect.addEventListener("change", () => {
+            badge.classList.remove("pending", "ready", "claimed");
+
+            if (statusSelect.value === "Pending") {
+              badge.classList.add("pending");
+            } 
+            else if (statusSelect.value === "Ready to pick up") {
+              badge.classList.add("ready");
+            } 
+            else {
+              badge.classList.add("claimed");
+            }
+
+            updateStatus(c.id, statusSelect.value);
+          });
         });
       });
   }
-
-  function applyStatusColor(select) {
-  select.classList.remove("pending", "ready", "completed");
-
-  if (select.value === "Pending") {
-    select.classList.add("pending");
-  } else if (select.value === "Ready to pick up") {
-    select.classList.add("ready");
-  } else if (select.value === "Completed") {
-    select.classList.add("completed");
-  }
-}
 
   recordsLink.addEventListener("click", (e) => {
     e.preventDefault();
