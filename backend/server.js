@@ -24,16 +24,6 @@ const db = mysql.createPool({
   }
 });
 
-
-
-db.connect(err => {
-  if (err) {
-    console.error("❌ Database connection failed:", err);
-    return;
-  }
-  console.log("✅ Connected to Railway database");
-});
-
 app.get("/customers", (req, res) => {
   const sql = `
     SELECT *

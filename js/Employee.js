@@ -129,7 +129,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-  fetch("https://laundrybackend-production-3c03.up.railway.app/addCustomer", {
+  fetch("https://laundrybackend-production-41d1.up.railway.app/addCustomer", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -150,7 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   function loadCustomers() {
-  fetch("https://laundrybackend-production-3c03.up.railway.app/customers")
+  fetch("https://laundrybackend-production-41d1.up.railway.app/customers")
       .then(res => res.json())
       .then(data => {
         tableBody.innerHTML = "";
@@ -198,7 +198,7 @@ document.addEventListener("DOMContentLoaded", () => {
           row.querySelector(".btn-delete").onclick = () => {
             if (!confirm("Are you sure you want to delete this record?")) return;
 
-          fetch(`https://laundrybackend-production-3c03.up.railway.app/deleteCustomer/${c.id}`, {
+          fetch(`https://laundrybackend-production-41d1.up.railway.app/deleteCustomer/${c.id}`, {
             method: "DELETE"
           })
             .then(res => res.json())
@@ -238,7 +238,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     function updateStatus(id, status) {
-    fetch(`https://laundrybackend-production-3c03.up.railway.app/updateStatus/${id}`, {
+    fetch(`https://laundrybackend-production-41d1.up.railway.app/updateStatus/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status })
