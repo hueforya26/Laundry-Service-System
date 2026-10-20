@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fresh'N Klean - Customer Page</title>
+  <meta name="theme-color" content="#f8f7fb">
+  <title>Fresh'n Klean — Customer Page</title>
 
   <script src="js/theme.js"></script>
   <link rel="stylesheet" href="css/Customer-page.css">
@@ -33,10 +34,6 @@
   </div>
 
     <div class="header-actions">
-    <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode">
-      <span class="theme-toggle-icon" aria-hidden="true">☾</span>
-      <span class="theme-toggle-label">Dark mode</span>
-    </button>
     <a id="employeeBtn" class="btn-employee" href="Login.html">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
         viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -52,17 +49,23 @@
       </svg>
       Employee
     </a>
+    <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode">
+      <span class="theme-toggle-icon" aria-hidden="true">☾</span>
+      <span class="theme-toggle-label">Dark mode</span>
+      <span class="theme-toggle-track" aria-hidden="true"><span class="theme-toggle-thumb"></span></span>
+    </button>
     </div>
   </header>
 
   <main class="customer-main">
     <section class="customer-intro">
-      <div>
+      <div class="intro-copy">
         <p class="eyebrow">A LITTLE FRESHNESS GOES A LONG WAY</p>
         <h2>Your laundry, taken care of.</h2>
         <p>Check the latest order updates below. We’ll keep everything clean, cared for, and right on schedule.</p>
+        <a class="intro-link" href="#queueTitle">Track today's orders <span aria-hidden="true">→</span></a>
       </div>
-      <div class="intro-art" aria-hidden="true"><span>✦</span><span>🫧</span><span>✦</span></div>
+      <div class="intro-art" aria-hidden="true"><span>✦</span><span>🫧</span><span>✦</span><span class="intro-sparkle">✧</span></div>
     </section>
 
     <section class="queue-section" aria-labelledby="queueTitle">

@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const API_URL = (window.LAUNDRY_API_URL || "http://localhost:3000").replace(/\/$/, "");
+  const API_URL = (window.LAUNDRY_API_URL || "https://laundrybackend-production-3c03.up.railway.app").replace(/\/$/, "");
   const openButton = document.querySelector(".jsCustomerBtn");
   const overlay = document.getElementById("containerModal");
   const closeButton = document.querySelector(".closeBtn");

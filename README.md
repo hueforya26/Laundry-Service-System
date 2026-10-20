@@ -9,6 +9,7 @@ A small laundry-service dashboard for customer order tracking, employee order ma
 - Monthly sales chart based on recorded orders from the most recent 12 months.
 - Responsive layouts for desktop and mobile screens.
 - Light and dark themes with a saved preference across pages.
+- Automatic order price estimates based on service and total weight.
 
 ## Run the backend
 
@@ -33,9 +34,22 @@ Configure these environment variables before starting the server:
 
 The API provides `GET /customers` for today's queue, `GET /customers?scope=all` for the employee dashboard and sales chart, `POST /addCustomer`, `PUT /updateStatus/:id`, and `DELETE /deleteCustomer/:id`.
 
+## Order price estimates
+
+The employee order form calculates an estimated total as weight multiplied by the selected service's per-kilogram rate. The rate tier is selected by total order weight (up to 5 kg, over 5 through 10 kg, or over 10 kg). Current editable rates are:
+
+| Service | Up to 5 kg | Over 5 through 10 kg | Over 10 kg |
+| --- | ---: | ---: | ---: |
+| Wash & Dry | ₱60/kg | ₱55/kg | ₱50/kg |
+| Full Service | ₱85/kg | ₱80/kg | ₱75/kg |
+| Dry Clean | ₱120/kg | ₱115/kg | ₱110/kg |
+| Ironing | ₱35/kg | ₱32/kg | ₱30/kg |
+
+These are starter estimates and can be adjusted in `js/Employee.js` and the matching pricing guide in `Employee.html`. The calculated total is sent with the order to the API.
+
 ## Connect the pages to the API
 
-The front end uses `http://localhost:3000` by default. To use a hosted or different API, set `window.LAUNDRY_API_URL` before the page scripts run. For example, add this before the page's JavaScript files:
+The customer and employee pages connect to the existing hosted laundry API by default. To use a local or different API, set `window.LAUNDRY_API_URL` before the page scripts run. For example, add this before the page's JavaScript files:
 
 ```html
 <script>window.LAUNDRY_API_URL = "http://localhost:3000";</script>

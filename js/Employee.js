@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const API_URL = (window.LAUNDRY_API_URL || "http://localhost:3000").replace(/\/$/, "");
+  const API_URL = (window.LAUNDRY_API_URL || "https://laundrybackend-production-3c03.up.railway.app").replace(/\/$/, "");
   const modal = document.getElementById("ModalOverlay");
   const form = document.getElementById("customerForm");
   const tableBody = document.querySelector("#customerTable tbody");
@@ -11,7 +11,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const recordCount = document.getElementById("recordCount");
   const formError = document.getElementById("formError");
   const saveButton = document.getElementById("saveBtn");
+  const serviceInput = document.getElementById("service");
+  const kiloInput = document.getElementById("kilo");
+  const priceInput = document.getElementById("price");
+  const priceHint = document.getElementById("priceHint");
   const currency = new Intl.NumberFormat("en-PH", { style: "currency", currency: "PHP", maximumFractionDigits: 2 });
+  const serviceRates = {
+    "Wash & Dry": [60, 55, 50],
+    "Full Service": [85, 80, 75],
+    "Dry Clean": [120, 115, 110],
+    Ironing: [35, 32, 30]
+  };
+  const weightTiers = ["up to 5 kg", "5.1–10 kg", "over 10 kg"];
   let customers = [];
   let salesChart = null;
   let noticeTimer;
@@ -53,9 +64,32 @@ document.addEventListener("DOMContentLoaded", () => {
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
   }
 
+  function customerDateKey(value) {
+    if (!value) return "";
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? "" : localDateKey(date);
+  }
+
   function amount(value) {
     const numericValue = Number(value);
     return Number.isFinite(numericValue) ? currency.format(numericValue) : currency.format(0);
+  }
+
+  function calculatePrice() {
+    const weight = Number(kiloInput.value);
+    const rates = serviceRates[serviceInput.value];
+    if (!rates || !Number.isFinite(weight) || weight < 0.1 || weight > 100) {
+      priceInput.value = "";
+      priceHint.textContent = rates
+        ? "Enter a weight from 0.1 to 100 kg to calculate a quote."
+        : "Choose a service and enter weight for a quote.";
+      return;
+    }
+
+    const tierIndex = weight <= 5 ? 0 : weight <= 10 ? 1 : 2;
+    const rate = rates[tierIndex];
+    priceInput.value = (Math.round((weight * rate + Number.EPSILON) * 100) / 100).toFixed(2);
+    priceHint.textContent = `${weight} kg × ${currency.format(rate)}/kg · ${weightTiers[tierIndex]}`;
   }
 
   function addCell(row, content, className) {
@@ -183,11 +217,11 @@ document.addEventListener("DOMContentLoaded", () => {
   function updateSummary() {
     const today = localDateKey();
     const thisMonth = today.slice(0, 7);
-    const todayCustomers = customers.filter(customer => String(customer.created_at || "").slice(0, 10) === today);
+    const todayCustomers = customers.filter(customer => customerDateKey(customer.created_at) === today);
     const pending = customers.filter(customer => !customer.status || customer.status === "Pending").length;
     const ready = customers.filter(customer => customer.status === "Ready to pick up").length;
     const monthSales = customers.reduce((total, customer) => (
-      String(customer.created_at || "").slice(0, 7) === thisMonth ? total + (Number(customer.price) || 0) : total
+      customerDateKey(customer.created_at).slice(0, 7) === thisMonth ? total + (Number(customer.price) || 0) : total
     ), 0);
 
     document.getElementById("ordersToday").textContent = String(todayCustomers.length);
@@ -217,7 +251,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     const totalsByMonth = new Map(monthSlots.map(slot => [slot.key, 0]));
     customers.forEach(customer => {
-      const key = String(customer.created_at || "").slice(0, 7);
+      const key = customerDateKey(customer.created_at).slice(0, 7);
       if (totalsByMonth.has(key)) totalsByMonth.set(key, totalsByMonth.get(key) + (Number(customer.price) || 0));
     });
     monthSlots.forEach(slot => { slot.total = totalsByMonth.get(slot.key); });
@@ -276,6 +310,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function openModal() {
     form.reset();
+    calculatePrice();
     formError.hidden = true;
     modal.hidden = false;
     document.getElementById("name").focus();
@@ -291,6 +326,10 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("closeModal").addEventListener("click", closeModal);
   document.getElementById("refreshBtn").addEventListener("click", () => loadCustomers());
   document.getElementById("salesRefreshBtn").addEventListener("click", () => loadCustomers());
+  serviceInput.addEventListener("input", calculatePrice);
+  serviceInput.addEventListener("change", calculatePrice);
+  kiloInput.addEventListener("input", calculatePrice);
+  kiloInput.addEventListener("change", calculatePrice);
   searchInput.addEventListener("input", renderCustomers);
   modal.addEventListener("click", event => { if (event.target === modal) closeModal(); });
   document.addEventListener("keydown", event => {
@@ -306,21 +345,22 @@ document.addEventListener("DOMContentLoaded", () => {
         link.classList.toggle("is-active", link === button);
         link.setAttribute("aria-current", link === button ? "page" : "false");
       });
-      document.addEventListener("themechange", () => {
-        if (salesChart) renderSalesChart();
-      });
       if (showSales && !salesChart) renderSalesChart();
     });
+  });
+  document.addEventListener("themechange", () => {
+    if (salesChart) renderSalesChart();
   });
 
   form.addEventListener("submit", async event => {
     event.preventDefault();
     formError.hidden = true;
-    const weight = Number(document.getElementById("kilo").value);
-    const price = Number(document.getElementById("price").value);
+    calculatePrice();
+    const weight = Number(kiloInput.value);
+    const price = Number(priceInput.value);
     const contact = document.getElementById("number").value.trim();
-    if (!Number.isFinite(weight) || weight <= 0 || weight > 100 || !Number.isFinite(price) || price <= 0 || price > 100000) {
-      formError.textContent = "Enter a valid weight and price within the allowed range.";
+    if (!serviceRates[serviceInput.value] || !Number.isFinite(weight) || weight <= 0 || weight > 100 || !Number.isFinite(price) || price <= 0 || price > 100000) {
+      formError.textContent = "Choose a service and enter a valid weight to calculate the price.";
       formError.hidden = false;
       return;
     }

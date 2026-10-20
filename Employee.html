@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#f5f4fa">
+  <meta name="theme-color" content="#f7f6fa">
   <title>Fresh'n Klean — Employee Dashboard</title>
   <script src="js/theme.js"></script>
   <link rel="stylesheet" href="css/Employee.css">
@@ -21,23 +21,28 @@
       <nav class="main-nav" aria-label="Main navigation">
         <button class="nav-link is-active" type="button" data-view="records">Records</button>
         <button class="nav-link" type="button" data-view="sales">Monthly sales</button>
+      </nav>
+      <div class="header-actions">
+        <a class="nav-link nav-link-exit" href="Customer-page.html">Customer view</a>
         <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode">
           <span class="theme-toggle-icon" aria-hidden="true">☾</span>
           <span class="theme-toggle-label">Dark mode</span>
+          <span class="theme-toggle-track" aria-hidden="true"><span class="theme-toggle-thumb"></span></span>
         </button>
-        <a class="nav-link nav-link-exit" href="Customer-page.html">Customer view</a>
-      </nav>
+      </div>
     </div>
   </header>
 
   <main class="dashboard">
     <section class="welcome-row">
       <div>
-        <p class="eyebrow">YOUR DAILY WORKSPACE</p>
+        <p class="eyebrow">✦ &nbsp; YOUR DAILY WORKSPACE</p>
         <h1>Good service, made simple.</h1>
         <p class="welcome-copy">Keep orders moving and every customer in the loop.</p>
       </div>
       <div class="today-chip"><span class="live-dot"></span><span id="todayLabel">Today</span></div>
+      <span class="hero-bubble hero-bubble-one" aria-hidden="true"></span>
+      <span class="hero-bubble hero-bubble-two" aria-hidden="true"></span>
     </section>
 
     <section class="stats-grid" aria-label="Order overview">
@@ -96,7 +101,7 @@
                 <th scope="col">Price</th>
                 <th scope="col">Contact</th>
                 <th scope="col">Order status</th>
-                <th scope="col"><span class="visually-hidden">Actions</span></th>
+                <th scope="col">Actions</th>
               </tr>
             </thead>
             <tbody></tbody>
@@ -158,10 +163,27 @@
           <input type="number" id="kilo" name="kilo" placeholder="0.0" min="0.1" max="100" step="0.1" required>
         </div>
         <div>
-          <label for="price">Price (₱)</label>
-          <input type="number" id="price" name="price" placeholder="0.00" min="0.01" max="100000" step="0.01" required>
+          <label for="price">Estimated price (₱)</label>
+          <input type="number" id="price" name="price" placeholder="Choose service and weight" min="0.01" max="100000" step="0.01" required readonly>
+          <small id="priceHint" class="price-hint">Choose a service and enter weight for a quote.</small>
         </div>
       </div>
+
+      <details class="rate-guide">
+        <summary>View service rates</summary>
+        <p>Estimated per-kg rates are selected by the total order weight.</p>
+        <div class="rate-table-wrap">
+          <table class="rate-table">
+            <thead><tr><th>Service</th><th>Up to 5 kg</th><th>5.1–10 kg</th><th>Over 10 kg</th></tr></thead>
+            <tbody>
+              <tr><th>Wash &amp; Dry</th><td>₱60/kg</td><td>₱55/kg</td><td>₱50/kg</td></tr>
+              <tr><th>Full Service</th><td>₱85/kg</td><td>₱80/kg</td><td>₱75/kg</td></tr>
+              <tr><th>Dry Clean</th><td>₱120/kg</td><td>₱115/kg</td><td>₱110/kg</td></tr>
+              <tr><th>Ironing</th><td>₱35/kg</td><td>₱32/kg</td><td>₱30/kg</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
 
       <label for="number">Contact number</label>
       <input type="tel" id="number" name="number" placeholder="e.g. 09XX XXX XXXX" maxlength="20" required>
