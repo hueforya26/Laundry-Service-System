@@ -1,71 +1,48 @@
-🧺 Laundry Service Management & Sales Tracking System
+# Fresh'n Klean Laundry Service
 
-A full-stack web application built to manage laundry service operations including customer records, order processing, payment tracking, and monthly sales reporting.
+A small laundry-service dashboard for customer order tracking, employee order management, and monthly sales reporting.
 
-This system was designed to simulate a real-world small business workflow, focusing on clean data handling, structured CRUD operations, and business logic implementation.
+## Features
 
-🚀 Features
+- Customer queue with live status updates and a customer-service request form.
+- Employee dashboard with order search, order creation, status updates, and deletion.
+- Monthly sales chart based on recorded orders from the most recent 12 months.
+- Responsive layouts for desktop and mobile screens.
+- Light and dark themes with a saved preference across pages.
 
-Customer management (Create, Read, Update, Delete)
+## Run the backend
 
-Order processing system
+Install the backend dependencies and start the API:
 
-Payment tracking and status updates
+```sh
+cd backend
+npm install
+npm start
+```
 
-Monthly sales reporting and calculations
+Configure these environment variables before starting the server:
 
-Business dashboard-style data overview
+| Variable | Purpose |
+| --- | --- |
+| `DB_HOST` | MySQL host |
+| `DB_USER` | MySQL user |
+| `DB_PASSWORD` | MySQL password |
+| `DB_NAME` | MySQL database |
+| `DB_PORT` | MySQL port (defaults to the driver's standard port) |
+| `PORT` | API port (defaults to `3000`) |
 
-Structured backend logic using Node.js
+The API provides `GET /customers` for today's queue, `GET /customers?scope=all` for the employee dashboard and sales chart, `POST /addCustomer`, `PUT /updateStatus/:id`, and `DELETE /deleteCustomer/:id`.
 
-🛠 Tech Stack
+## Connect the pages to the API
 
-Frontend
+The front end uses `http://localhost:3000` by default. To use a hosted or different API, set `window.LAUNDRY_API_URL` before the page scripts run. For example, add this before the page's JavaScript files:
 
-HTML5
+```html
+<script>window.LAUNDRY_API_URL = "http://localhost:3000";</script>
+```
 
-CSS3
+Serve the project directory with a static web server (rather than opening the HTML files directly) so browser requests can reach the API.
 
-JavaScript (ES6+)
+## Important
 
-Backend
-
-Node.js
-
-REST-style routing concepts
-
-CRUD-based architecture
-
-Tools
-
-Git & GitHub
-
-Browser DevTools
-
-📊 Business Logic Focus
-
-This project emphasizes:
-
-Data structuring for small business workflows
-
-Automated sales calculations
-
-Maintainable code organization
-
-Separation of frontend and backend responsibilities
-
-Realistic management system design
-
-🎯 Purpose of the Project
-
-The goal of this system is to practice:
-
-Full-stack development workflow
-
-Backend logic implementation
-
-Real-world CRUD applications
-
-Building scalable project structure
-
-Translating business requirements into working software
+The employee sign-in is still a client-side demo flow inherited from the original project; it is not authentication and must be replaced with server-side authentication before exposing employee features publicly. Customer-service requests also require the configured EmailJS service and templates.

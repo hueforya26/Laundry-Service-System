@@ -1,33 +1,57 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Log-In Page</title>
-        <link rel="stylesheet" href="css/Login.css">
-    </head>
-    <body>
-        
-     <img src="images/logo2.png" class="logo">
-     <img src="images/lavender.png" class="background-image" alt="lavender background">
-     <button class="close-btn jsCloseBtn"><img style="width: 80px" src="images/x-flower8.png"></button>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f4f1fa">
+  <title>Employee sign in — Fresh'n Klean</title>
+  <script src="js/theme.js"></script>
+  <link rel="stylesheet" href="css/Login.css">
+</head>
+<body>
+  <main class="login-layout">
+    <section class="login-story" aria-label="Fresh'n Klean">
+      <a class="brand" href="Customer-page.html">
+        <span class="brand-mark" aria-hidden="true">FK</span>
+        <span>Fresh'n Klean</span>
+      </a>
+      <div class="story-copy">
+        <p class="eyebrow">CLEAN STARTS HERE</p>
+        <h1>Care in every cycle.</h1>
+        <p>Your team workspace for smooth service and happy customers.</p>
+      </div>
+      <div class="story-orbit orbit-one" aria-hidden="true"></div>
+      <div class="story-orbit orbit-two" aria-hidden="true"></div>
+      <div class="story-bubble" aria-hidden="true">✦</div>
+      <p class="story-footer">Thoughtful laundry care, every day.</p>
+    </section>
 
+    <section class="login-panel">
+      <div class="login-tools">
+        <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode">
+          <span class="theme-toggle-icon" aria-hidden="true">☾</span>
+          <span class="theme-toggle-label">Dark mode</span>
+        </button>
+        <a class="back-link" href="Customer-page.html">← Back to customer page</a>
+      </div>
+      <form id="loginForm" class="login-box">
+        <span class="login-icon" aria-hidden="true">↗</span>
+        <p class="eyebrow">EMPLOYEE ACCESS</p>
+        <h2>Welcome back</h2>
+        <p class="login-description">Sign in to manage customer orders and sales.</p>
 
-        <div class="login-box">
-            <h2 class="login-header">Log-In</h2>
-                <input type="text" placeholder="Username" id="username" required>
-                <input type="password" placeholder="Password" id="password" required>
-                
-            <div class="button-container">
-                <button class="login-btn" id="loginForm">Login</button>
-            </div>
-            <div class="register" id="message"></div>
-            
-                
-            </div>
-        </div> 
+        <label for="username">Username</label>
+        <input type="text" placeholder="Enter your username" id="username" name="username" autocomplete="username" required>
 
+        <label for="password">Password</label>
+        <input type="password" placeholder="Enter your password" id="password" name="password" autocomplete="current-password" required>
 
-
-
-        <script src="js/Login page.js"></script>
-    </body>
+        <p class="login-message" id="message" role="alert" aria-live="polite"></p>
+        <button class="login-btn" type="submit">Sign in to dashboard <span aria-hidden="true">→</span></button>
+        <p class="login-footnote">Demo sign-in · server-side authentication required for production</p>
+      </form>
+    </section>
+  </main>
+  <script src="js/Login page.js"></script>
+</body>
 </html>

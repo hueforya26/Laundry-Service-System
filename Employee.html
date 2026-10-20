@@ -2,113 +2,175 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Fresh'n Klean — Employee Panel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f5f4fa">
+  <title>Fresh'n Klean — Employee Dashboard</title>
+  <script src="js/theme.js"></script>
   <link rel="stylesheet" href="css/Employee.css">
 </head>
 <body>
-
-  <header>
+  <header class="site-header">
     <div class="header-container">
-      <div class="logo-section">
-        <div class="logo-icon">
-          <i data-lucide="package" width="36" height="36" stroke-width="2" color="white"></i>
-        </div>
-        <div class="logo-text">
-          <h1>Fresh'n Klean</h1>
-          <p>
-            <i data-lucide="sparkles" width="12" height="12"></i>
-            Employee Dashboard
-          </p>
-        </div>
-      </div>
-      <nav>
-        <button><a href="#CustomerRecord" id="recordsLink">Records</a></button>
-        <button><a href="#" id="salesLink">Monthly Sales</a></button>
+      <a class="brand" href="Employee.html" aria-label="Fresh'n Klean dashboard">
+        <span class="brand-mark" aria-hidden="true">FK</span>
+        <span class="brand-copy">
+          <strong>Fresh'n Klean</strong>
+          <small>EMPLOYEE DASHBOARD</small>
+        </span>
+      </a>
+      <nav class="main-nav" aria-label="Main navigation">
+        <button class="nav-link is-active" type="button" data-view="records">Records</button>
+        <button class="nav-link" type="button" data-view="sales">Monthly sales</button>
+        <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode">
+          <span class="theme-toggle-icon" aria-hidden="true">☾</span>
+          <span class="theme-toggle-label">Dark mode</span>
+        </button>
+        <a class="nav-link nav-link-exit" href="Customer-page.html">Customer view</a>
+      </nav>
     </div>
   </header>
 
-  <div id="ModalOverlay">
-    <form class="modalBox form">
-      <h3>Add Customer</h3>
-      <button id="closeModal" class="closeBtn">
-        <img style="width:50px" src="images/x-flower8.png">
-      </button>
-
-      <input type="text" id="name" placeholder="Name">
-      <select id="service" class="service">
-        <option value="">Select Service</option>
-        <option value="Wash & Dry">Wash & Dry</option>
-        <option value="Full Service">Full Service</option>
-      </select>
-      
-      <input type="text" inputmode="decimal" id="kilo" placeholder="Kilo">
-      <input type="text" inputmode="decimal" id="price" placeholder="Price">
-      <input type="text" inputmode="number" id="number" placeholder="Contact">
-
-      <div class="btn-Modal">
-        <button type="button" id="saveBtn" class="btn-save">Save</button>
+  <main class="dashboard">
+    <section class="welcome-row">
+      <div>
+        <p class="eyebrow">YOUR DAILY WORKSPACE</p>
+        <h1>Good service, made simple.</h1>
+        <p class="welcome-copy">Keep orders moving and every customer in the loop.</p>
       </div>
+      <div class="today-chip"><span class="live-dot"></span><span id="todayLabel">Today</span></div>
+    </section>
+
+    <section class="stats-grid" aria-label="Order overview">
+      <article class="stat-card">
+        <span class="stat-icon icon-orders" aria-hidden="true">▤</span>
+        <div><p>Orders today</p><strong id="ordersToday">—</strong></div>
+        <small id="ordersTodayNote">Updated just now</small>
+      </article>
+      <article class="stat-card">
+        <span class="stat-icon icon-pending" aria-hidden="true">◷</span>
+        <div><p>In progress</p><strong id="ordersPending">—</strong></div>
+        <small>Waiting or being washed</small>
+      </article>
+      <article class="stat-card">
+        <span class="stat-icon icon-ready" aria-hidden="true">✓</span>
+        <div><p>Ready to collect</p><strong id="ordersReady">—</strong></div>
+        <small>Customers can pick these up</small>
+      </article>
+      <article class="stat-card">
+        <span class="stat-icon icon-sales" aria-hidden="true">₱</span>
+        <div><p>Sales this month</p><strong id="salesThisMonth">—</strong></div>
+        <small>Based on recorded orders</small>
+      </article>
+    </section>
+
+    <section id="recordsView" class="view-panel">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">ORDER MANAGEMENT</p>
+          <h2>Customer records</h2>
+          <p class="section-copy">Search orders, update their progress, or add a new customer.</p>
+        </div>
+        <button id="openModal" class="button button-primary" type="button"><span aria-hidden="true">＋</span> Add customer</button>
+      </div>
+
+      <div class="toolbar">
+        <label class="search-box">
+          <span aria-hidden="true">⌕</span>
+          <input type="search" id="searchInput" placeholder="Search name, service, or contact" autocomplete="off">
+        </label>
+        <div class="toolbar-actions">
+          <span id="recordCount" class="record-count">Loading orders…</span>
+          <button id="refreshBtn" class="button button-secondary" type="button"><span aria-hidden="true">↻</span> Refresh</button>
+        </div>
+      </div>
+
+      <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
+      <div class="table-card">
+        <div class="table-scroll">
+          <table id="customerTable">
+            <thead>
+              <tr>
+                <th scope="col">Customer</th>
+                <th scope="col">Service</th>
+                <th scope="col">Weight</th>
+                <th scope="col">Price</th>
+                <th scope="col">Contact</th>
+                <th scope="col">Order status</th>
+                <th scope="col"><span class="visually-hidden">Actions</span></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div id="emptyState" class="empty-state" hidden>
+          <span class="empty-icon" aria-hidden="true">🧺</span>
+          <h3>No orders found</h3>
+          <p>Try a different search or add your first customer order.</p>
+          <button id="emptyAddBtn" class="button button-secondary" type="button">Add a customer</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="salesView" class="view-panel" hidden>
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">BUSINESS PERFORMANCE</p>
+          <h2>Monthly sales</h2>
+          <p class="section-copy">A rolling 12-month view based on customer orders.</p>
+        </div>
+        <button id="salesRefreshBtn" class="button button-secondary" type="button"><span aria-hidden="true">↻</span> Refresh data</button>
+      </div>
+      <div class="sales-summary">
+        <div>
+          <span class="summary-label">Revenue this month</span>
+          <strong id="salesSummaryTotal">₱0</strong>
+        </div>
+        <p id="salesSummaryCaption">Sales are calculated from all recorded orders.</p>
+      </div>
+      <div class="chart-card">
+        <div id="salesChartContainer"><canvas id="salesChart" aria-label="Monthly sales bar chart" role="img"></canvas></div>
+      </div>
+    </section>
+  </main>
+
+  <div id="ModalOverlay" class="modal-overlay" hidden>
+    <form id="customerForm" class="modal-card">
+      <button id="closeModal" class="modal-close" type="button" aria-label="Close form">×</button>
+      <p class="eyebrow">NEW ORDER</p>
+      <h2>Add a customer</h2>
+      <p class="modal-copy">Enter the order details to add it to today's records.</p>
+
+      <label for="name">Customer name</label>
+      <input type="text" id="name" name="name" placeholder="e.g. Alex Santos" maxlength="100" required>
+
+      <label for="service">Laundry service</label>
+      <select id="service" name="service" required>
+        <option value="">Choose a service</option>
+        <option value="Wash & Dry">Wash &amp; Dry</option>
+        <option value="Full Service">Full service</option>
+        <option value="Dry Clean">Dry clean</option>
+        <option value="Ironing">Ironing</option>
+      </select>
+
+      <div class="form-row">
+        <div>
+          <label for="kilo">Weight (kg)</label>
+          <input type="number" id="kilo" name="kilo" placeholder="0.0" min="0.1" max="100" step="0.1" required>
+        </div>
+        <div>
+          <label for="price">Price (₱)</label>
+          <input type="number" id="price" name="price" placeholder="0.00" min="0.01" max="100000" step="0.01" required>
+        </div>
+      </div>
+
+      <label for="number">Contact number</label>
+      <input type="tel" id="number" name="number" placeholder="e.g. 09XX XXX XXXX" maxlength="20" required>
+      <p id="formError" class="form-error" role="alert" hidden></p>
+      <button id="saveBtn" class="button button-primary button-wide" type="submit">Save customer</button>
     </form>
   </div>
 
-  <section id="modalLogin">
-    <form class="admin-login modalbox">
-      <h2>Owner Only Access!</h2>
-      <p class="description">
-        Please enter the admin password to access this page
-      </p>
-
-      <label for="adminPassword">Password</label>
-      <div class="input-box">
-        <input type="password" id="adminPassword" placeholder="Enter Password" required>
-      </div>
-
-      <div class="btns">
-        <button type="submit" class="login">Login</button>
-        <button type="button" class="cancel">Cancel</button>
-      </div>
-    </form>
-  </section>
-
-  <main>
-    <section id="CustomerRecord">
-      <article class="txtSearch">
-        <div class="topBar">
-          <form class="searchBar">
-            <span class="search-icon">🔍</span>
-            <input type="text" id="searchInput" placeholder="Search customer name..."/>
-          </form>
-
-          <button id="openModal" class="btn-add">+ Add Customer</button>
-        </div>
-      </article>
-
-      <article class="table-container">
-        <table class="employeeBody" id="customerTable">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Type of Service</th>
-              <th>Kilo</th> 
-              <th>Price</th>
-              <th>Contact</th>
-              <th>Status</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </article>
-    </section>
-    
-    <section id="monthlySales" class="salesGraph" style="display:none;">
-      <h2>Monthly Sales</h2>
-      <div id="salesChartContainer">
-        <canvas id="salesChart"></canvas>
-      </div>
-    </section>
-
   <script src="js/chart.js"></script>
-  <script src="js/employee.js"></script>
+  <script src="js/Employee.js"></script>
 </body>
 </html>
