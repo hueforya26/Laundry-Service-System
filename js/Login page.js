@@ -1,34 +1,27 @@
-let users = [
-        { username: "jb", password: "1234" },
-        { username: "anna", password: "abcd" },
-        { username: "mike", password: "pass" }
-        ];
+const users = [
+  { username: "jb", password: "1234" },
+  { username: "anna", password: "abcd" },
+  { username: "mike", password: "pass" }
+];
 
-
+document.addEventListener("DOMContentLoaded", () => {
   const loginForm = document.getElementById("loginForm");
   const message = document.getElementById("message");
 
-  loginForm.addEventListener("click", function(e) {
-  e.preventDefault();
+  loginForm.addEventListener("submit", event => {
+    event.preventDefault();
+    const enteredUsername = document.getElementById("username").value.trim();
+    const enteredPassword = document.getElementById("password").value;
+    const user = users.find(account => (
+      account.username === enteredUsername && account.password === enteredPassword
+    ));
 
-  const enteredUsername = document.getElementById("username").value;
-  const enteredPassword = document.getElementById("password").value;
+    if (user) {
+      window.location.assign("Employee.html");
+      return;
+    }
 
-  const user = users.find(
-    u => u.username === enteredUsername && u.password === enteredPassword
-  );
-
-  if (user) {
-    window.location.href = "Employee.html";
-
-
-  } else {
-    message.textContent = "Invalid username or password";
-    message.style.color = "red";
-  }
+    message.textContent = "That username and password don't match. Please try again.";
+    document.getElementById("password").focus();
+  });
 });
-
-const closeBtn = document.querySelector(".jsCloseBtn");
-closeBtn.addEventListener("click", function() {
-     window.location.href = "Customer-page.html";
-}); 

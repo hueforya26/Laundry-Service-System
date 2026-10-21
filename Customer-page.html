@@ -3,10 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fresh'N Klean - Customer Page</title>
+  <meta name="theme-color" content="#f8f7fb">
+  <title>Fresh'n Klean — Customer Page</title>
 
-  <link rel="stylesheet" href="Css/Customer-page.css">
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script src="js/theme.js"></script>
+  <link rel="stylesheet" href="css/Customer-page.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 </head>
 
 <body>
@@ -15,7 +17,7 @@
 
   <div class="logo-container">
     
-    <div class="logo-icon">
+    <div class="logo-icon" aria-hidden="true">
       <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
         <rect x="3" y="3" width="18" height="18" rx="3"></rect>
         <circle cx="12" cy="13" r="5"></circle>
@@ -31,11 +33,8 @@
 
   </div>
 
-    <button 
-      id="employeeBtn" 
-      class="btn-employee" 
-      onclick="location.href='Login.html'"
-    >
+    <div class="header-actions">
+    <a id="employeeBtn" class="btn-employee" href="Login.html">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
         viewBox="0 0 24 24" fill="none" stroke="currentColor"
         stroke-width="2" stroke-linecap="round"
@@ -49,28 +48,59 @@
 
       </svg>
       Employee
+    </a>
+    <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode">
+      <span class="theme-toggle-icon" aria-hidden="true">☾</span>
+      <span class="theme-toggle-label">Dark mode</span>
+      <span class="theme-toggle-track" aria-hidden="true"><span class="theme-toggle-thumb"></span></span>
     </button>
+    </div>
   </header>
 
+  <main class="customer-main">
+    <section class="customer-intro">
+      <div class="intro-copy">
+        <p class="eyebrow">A LITTLE FRESHNESS GOES A LONG WAY</p>
+        <h2>Your laundry, taken care of.</h2>
+        <p>Check the latest order updates below. We’ll keep everything clean, cared for, and right on schedule.</p>
+        <a class="intro-link" href="#queueTitle">Track today's orders <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="intro-art" aria-hidden="true"><span>✦</span><span>🫧</span><span>✦</span><span class="intro-sparkle">✧</span></div>
+    </section>
+
+    <section class="queue-section" aria-labelledby="queueTitle">
+      <div class="queue-heading">
+        <div>
+          <p class="eyebrow">LIVE ORDER UPDATES</p>
+          <h2 id="queueTitle">Today's customer queue</h2>
+          <p>Order status refreshes automatically every 30 seconds.</p>
+        </div>
+        <button id="queueRefresh" class="queue-refresh" type="button"><span aria-hidden="true">↻</span> Refresh</button>
+      </div>
+      <div id="queueNotice" class="queue-notice" role="status" aria-live="polite" hidden></div>
+      <div class="table-section">
+        <table id="customerTable" class="rounded-table">
+          <thead>
+            <tr>
+              <th scope="col">Customer</th>
+              <th scope="col">Contact number</th>
+              <th scope="col">Price</th>
+              <th scope="col">Status</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <div id="queueEmpty" class="queue-empty" hidden>
+          <span aria-hidden="true">🧺</span>
+          <h3>Nothing in the queue just yet</h3>
+          <p>New orders will appear here as soon as they're added.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
   
-  <section class="table-section" style="overflow-y:auto; max-height:450px; scrollbar-width: thin; scrollbar-color: #a97fc3 #f0e6fa;">
-
-    <table id="customerTable" class="rounded-table">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Contact Number</th>
-          <th>Price</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody></tbody> 
-    </table>
-
-  </section>
-
-  
-  <button class="custom-cs-button jsCustomerBtn">
+  <button class="custom-cs-button jsCustomerBtn" type="button" aria-expanded="false" aria-controls="containerModal">
 
     <div class="icon-circle">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -98,8 +128,8 @@
 
     <section class="container offContainer containerModal">
 
-      <button class="btn-close closeBtn">
-        <img style="width:50px;" src="images/x-flower8.png">
+      <button class="btn-close closeBtn" type="button" aria-label="Close customer service form">
+        ×
       </button>
 
       <header class="brand-header">
@@ -159,9 +189,8 @@
             ></textarea>
           </div>
 
-          <button type="submit" class="btn-login">
-            Submit Request
-          </button>
+          <button type="submit" class="btn-login">Submit request</button>
+          <p id="serviceMessage" class="service-message" role="status" aria-live="polite"></p>
 
         </form>
 
@@ -171,47 +200,7 @@
 
   
   <script src="js/Customer-page.js"></script>
-
-  <script>
-    (function () {
-      emailjs.init("t6MDpS7dkfS8CHno3");
-    })();
-
-    console.log("emailjs:", emailjs);
-
-    const form = document.getElementById("loginForm");
-
-    form.addEventListener("submit", function (e) {
-      e.preventDefault();
-
-      const customerName = form.customerName.value;
-      const email = form.email.value;
-      const selectConcern = form.selectConcern.value;
-      const message = form.message.value;
-
-      emailjs.send("service_ul5j1zt", "template_mvk3297", {
-        customer_name: customerName,
-        user_email: email,
-        concern_type: selectConcern,
-        message: message
-      })
-      .then(() => {
-        return emailjs.send("service_ul5j1zt", "template_24fa3xo", {
-          to_name: customerName,
-          concern: selectConcern,
-          to_email: email
-        });
-      })
-      .then(() => {
-        alert("Request sent successfully 📩!");
-        form.reset();
-      })
-      .catch((error) => {
-        console.error("EmailJS ERROR:", error);
-        alert("Something failed. Check console (F12).");
-      });
-    });
-  </script>
+  <script src="js/CustomerService.js"></script>
 
 </body>
 </html>
