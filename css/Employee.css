@@ -264,6 +264,7 @@ tbody tr:hover { background: #fcfbfe; }
   .theme-toggle { min-height: 36px; padding: 0 8px; font-size: 9px; }
   .theme-toggle-icon { font-size: 15px; }
   .nav-link-exit { display: none; }
+  .nav-link.employee-logout { display: inline-flex; }
   .dashboard { width: calc(100% - 28px); padding: 23px 0 48px; }
   .welcome-row { min-height: 170px; align-items: flex-start; flex-direction: column; gap: 14px; padding: 22px; }
   .today-chip { align-self: flex-start; }

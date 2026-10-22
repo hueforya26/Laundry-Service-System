@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f7f6fa">
+  <title>Fresh'n Klean — Admin Dashboard</title>
+  <script src="js/theme.js"></script>
+  <link rel="stylesheet" href="css/Employee.css">
+  <link rel="stylesheet" href="css/Admin.css">
+</head>
+<body>
+  <main id="adminLogin" class="admin-login-shell">
+    <section class="admin-login-card" aria-labelledby="adminLoginTitle">
+      <a class="brand admin-login-brand" href="Admin.html" aria-label="Fresh'n Klean admin">
+        <span class="brand-mark" aria-hidden="true">FK</span>
+        <span class="brand-copy">
+          <strong>Fresh'n Klean</strong>
+          <small>ADMIN ACCESS</small>
+        </span>
+      </a>
+      <span class="admin-login-icon" aria-hidden="true">↗</span>
+      <p class="eyebrow">ADMINISTRATOR ACCESS</p>
+      <form id="adminLoginForm">
+        <label for="adminPassword">Password</label>
+        <input id="adminPassword" name="password" type="password" placeholder="Enter admin password" autocomplete="current-password" required>
+        <p id="adminLoginMessage" class="admin-login-message" role="alert" aria-live="polite"></p>
+        <button class="button button-primary admin-login-button" type="submit">Open dashboard <span aria-hidden="true">→</span></button>
+      </form>
+      <button class="theme-toggle admin-login-theme" type="button" data-theme-toggle aria-label="Switch to dark mode">
+        <span class="theme-toggle-icon" aria-hidden="true">☾</span>
+        <span class="theme-toggle-label">Dark mode</span>
+        <span class="theme-toggle-track" aria-hidden="true"><span class="theme-toggle-thumb"></span></span>
+      </button>
+      <span class="admin-login-bubble admin-login-bubble-one" aria-hidden="true"></span>
+      <span class="admin-login-bubble admin-login-bubble-two" aria-hidden="true"></span>
+    </section>
+  </main>
+
+  <div id="adminDashboard" hidden>
+  <header class="site-header">
+    <div class="header-container">
+      <a class="brand" href="Admin.html" aria-label="Fresh'n Klean admin dashboard">
+        <span class="brand-mark" aria-hidden="true">FK</span>
+        <span class="brand-copy">
+          <strong>Fresh'n Klean</strong>
+          <small>ADMIN DASHBOARD</small>
+        </span>
+      </a>
+      <nav class="main-nav" aria-label="Dashboard sections">
+        <button class="nav-link is-active" type="button" data-view="overview" aria-current="page">Overview</button>
+        <button class="nav-link" type="button" data-view="sales" aria-current="false">Sales analytics</button>
+      </nav>
+      <div class="header-actions">
+        <a class="nav-link nav-link-exit" href="Employee.html">Employee workspace</a>
+        <a class="nav-link nav-link-exit" href="Customer-page.html">Customer view</a>
+        <button id="adminLogout" class="nav-link nav-link-exit admin-logout" type="button">Log out</button>
+        <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode">
+          <span class="theme-toggle-icon" aria-hidden="true">☾</span>
+          <span class="theme-toggle-label">Dark mode</span>
+          <span class="theme-toggle-track" aria-hidden="true"><span class="theme-toggle-thumb"></span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="dashboard">
+    <div class="admin-toolbar">
+      <p id="lastUpdated" class="record-count" aria-live="polite">Loading dashboard data…</p>
+      <button id="refreshDashboard" class="button button-secondary" type="button">
+        <span aria-hidden="true">↻</span> Refresh dashboard
+      </button>
+    </div>
+    <div id="adminNotice" class="notice" role="status" aria-live="polite" hidden></div>
+
+    <section id="overviewView" class="view-panel" aria-labelledby="overviewHeading">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">RECENT PERFORMANCE</p>
+          <h2 id="overviewHeading">Weekly sales comparison</h2>
+          <p class="section-copy">The last 7 calendar days compared with the 7 days before them.</p>
+        </div>
+      </div>
+
+      <article class="comparison-card" aria-live="polite">
+        <div class="comparison-period">
+          <span class="summary-label" id="currentPeriodLabel">Last 7 days</span>
+          <strong id="currentPeriodSales">—</strong>
+          <span class="comparison-orders" id="currentPeriodOrders">—</span>
+          <div class="comparison-track"><span id="currentPeriodBar"></span></div>
+        </div>
+        <div class="comparison-period">
+          <span class="summary-label" id="previousPeriodLabel">Previous 7 days</span>
+          <strong id="previousPeriodSales">—</strong>
+          <span class="comparison-orders" id="previousPeriodOrders">—</span>
+          <div class="comparison-track comparison-track-previous"><span id="previousPeriodBar"></span></div>
+        </div>
+        <div class="comparison-change">
+          <span id="salesChangeIcon" aria-hidden="true">—</span>
+          <strong id="salesChange">—</strong>
+          <span id="salesChangeCaption">Compared with previous 7 days</span>
+        </div>
+      </article>
+
+      <section class="admin-recent-section" aria-labelledby="recentOrdersHeading">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">LATEST ACTIVITY</p>
+            <h2 id="recentOrdersHeading">Recent orders</h2>
+            <p class="section-copy">The latest orders recorded in the system.</p>
+          </div>
+          <a class="button button-secondary" href="Employee.html">Manage orders <span aria-hidden="true">→</span></a>
+        </div>
+        <div class="table-card">
+          <div class="table-scroll">
+            <table class="admin-recent-table">
+              <thead>
+                <tr>
+                  <th scope="col">Customer</th>
+                  <th scope="col">Service</th>
+                  <th scope="col">Order date</th>
+                  <th scope="col">Price</th>
+                  <th scope="col">Action</th>
+                </tr>
+              </thead>
+              <tbody id="recentOrdersBody"></tbody>
+            </table>
+          </div>
+          <div id="recentOrdersEmpty" class="empty-state" hidden>
+            <span class="empty-icon" aria-hidden="true">🧺</span>
+            <h3>No orders found</h3>
+            <p>Orders will appear here once they have been recorded.</p>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <section id="salesView" class="view-panel" aria-labelledby="salesHeading" hidden>
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">BUSINESS PERFORMANCE</p>
+          <h2 id="salesHeading">Monthly sales</h2>
+          <p class="section-copy">A rolling 12-month view based on order creation date and recorded prices.</p>
+        </div>
+      </div>
+      <div class="sales-summary">
+        <div>
+          <span class="summary-label">Revenue this month</span>
+          <strong id="salesSummaryTotal">—</strong>
+        </div>
+        <p id="salesSummaryCaption">Based on recorded order prices; this is not a payment report.</p>
+      </div>
+      <div class="chart-card">
+        <div id="salesChartContainer">
+          <canvas id="salesChart" aria-label="Monthly sales bar chart" role="img"></canvas>
+          <p id="chartUnavailable" class="admin-empty" hidden>The sales chart could not be displayed. Refresh the page and try again.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+  </div>
+
+  <script src="js/chart.js"></script>
+  <script src="js/Admin.js"></script>
+</body>
+</html>
