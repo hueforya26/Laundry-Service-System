@@ -5,7 +5,8 @@
   if (!stage) return;
 
 
-  var API_BASE = (window.LAUNDRY_API_URL || 'laundry-service-system-production.up.railway.app').replace(/\/+$/, '');
+  var API_BASE = (window.LAUNDRY_API_URL || 'https://laundry-service-system-production.up.railway.app').replace(/\/+$/, '');
+  if (!/^https?:\/\//i.test(API_BASE)) API_BASE = 'https://' + API_BASE;
 
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
@@ -51,6 +52,7 @@
       price: Number(pick(r, ['price', 'total', 'amount']) || 0) || 0,
       completed: completed,
       cancelled: cancelled,
+      created: created,
       when: completed ? (doneAt || created) : created
     };
   }
@@ -78,6 +80,10 @@
 
   function getCompleted(start, end) {
     return orders.filter(function (o) { return o.completed && o.when >= start && o.when < end; });
+  }
+  // Earnings: every recorded (non-cancelled) order, dated by when it was created.
+  function getSales(start, end) {
+    return orders.filter(function (o) { return !o.cancelled && o.created && o.created >= start && o.created < end; });
   }
   function inProgress() {
     return orders.filter(function (o) { return !o.completed && !o.cancelled; }).length;
@@ -175,7 +181,8 @@
     if (!d || d > today0) { d = today0; dateEl.value = toInput(d); }
     var range = getRange(type, d), start = range.start, end = range.end;
     var list = getCompleted(start, end);
-    var earn = list.reduce(function (s, o) { return s + o.price; }, 0);
+    var sales = getSales(start, end);
+    var earn = sales.reduce(function (s, o) { return s + o.price; }, 0);
     var last = addDays(end, -1);
 
     $('#fkRangeLabel').textContent =
@@ -206,15 +213,18 @@
         ? lab(i) + ' – ' + ((((i + 1) % 12) || 12) + ((i + 1) % 24 < 12 ? 'a' : 'p'))
         : fmtD(addDays(start, i), { weekday: 'short', month: 'short', day: 'numeric' });
     };
-    var earnV = Array(n).fill(0), cntV = Array(n).fill(0);
-    list.forEach(function (o) { var i = idx(o); if (i >= 0 && i < n) { earnV[i] += o.price; cntV[i]++; } });
+    var earnV = Array(n).fill(0), cntV = Array(n).fill(0), saleCntV = Array(n).fill(0);
+    var idxCreated = function (o) { return idx({ when: o.created }); };
+    sales.forEach(function (o) { var i = idxCreated(o); if (i >= 0 && i < n) { earnV[i] += o.price; saleCntV[i]++; } });
+    list.forEach(function (o) { var i = idx(o); if (i >= 0 && i < n) cntV[i]++; });
     var vals = metric === 'earnings' ? earnV : cntV;
     var fmtV = function (v) { return metric === 'earnings' ? peso(v) : v + (v === 1 ? ' order' : ' orders'); };
 
     $('#fkReadout').textContent =
       loadState === 'loading' ? 'Loading orders…'
         : loadState === 'error' ? 'Orders could not be loaded.'
-          : list.length ? 'Hover or tap a bar for details' : 'No completed orders in this range.';
+          : (metric === 'earnings' ? sales.length : list.length) ? 'Hover or tap a bar for details'
+            : (metric === 'earnings' ? 'No orders in this range.' : 'No completed orders in this range.');
 
     var W = 640, H = 240, pl = 44, pb = 26, pt = 22;
     var ax = chartAxis(metric, type, Math.max.apply(null, vals)), top = ax.top, yStep = ax.step;
@@ -252,8 +262,9 @@
       if (!reduceMotion()) r.style.animationDelay = i * 70 + 'ms';
       var show = function () {
         var k = +r.dataset.i;
-        $('#fkReadout').innerHTML = '<b>' + esc(fullLab(k)) + '</b> · ' + peso(earnV[k]) + ' from ' + cntV[k] +
-          ' completed order' + (cntV[k] === 1 ? '' : 's');
+        $('#fkReadout').innerHTML = metric === 'earnings'
+          ? '<b>' + esc(fullLab(k)) + '</b> · ' + peso(earnV[k]) + ' from ' + saleCntV[k] + ' order' + (saleCntV[k] === 1 ? '' : 's')
+          : '<b>' + esc(fullLab(k)) + '</b> · ' + cntV[k] + ' completed order' + (cntV[k] === 1 ? '' : 's');
       };
       r.addEventListener('mouseenter', show);
       r.addEventListener('focus', show);
@@ -275,7 +286,7 @@
       var ip = inProgress();
       ruleTxt.textContent = loadState === 'loading'
         ? 'Loading your orders…'
-        : 'Only orders marked Completed (picked up) are counted. ' + ip + ' order' + (ip === 1 ? ' is' : 's are') + ' still in progress and not included.';
+        : 'Earnings count every recorded order (cancelled orders excluded). ' + ip + ' order' + (ip === 1 ? ' is' : 's are') + ' still in progress.';
     }
     syncPills();
   }
