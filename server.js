@@ -19,9 +19,18 @@ const db = new Pool({
   max: 10,
 });
 
+console.log("DATABASE_URL set:", Boolean(process.env.DATABASE_URL));
+
 db.query("SELECT 1")
   .then(() => console.log("Connected to the Supabase database"))
-  .catch((err) => console.error("Database connection failed:", err.message));
+  .catch((err) =>
+    console.error(
+      "Database connection failed:",
+      err.code || "",
+      err.message || "",
+      (err.errors || []).map((e) => e.message).join(" | ")
+    )
+  );
 
 app.get("/customers", async (req, res) => {
   const includeAll = req.query.scope === "all";
