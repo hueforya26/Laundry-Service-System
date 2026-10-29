@@ -20,7 +20,6 @@
       </a>
       <nav class="main-nav" aria-label="Main navigation">
         <button class="nav-link is-active" type="button" data-view="records">Records</button>
-        <button class="nav-link" type="button" data-view="sales">Monthly sales</button>
       </nav>
       <div class="header-actions">
         <a class="nav-link nav-link-exit" href="Admin.html">Admin dashboard</a>
@@ -35,17 +34,6 @@
   </header>
 
   <main class="dashboard">
-    <section class="welcome-row">
-      <div>
-        <p class="eyebrow">✦ &nbsp; YOUR DAILY WORKSPACE</p>
-        <h1>Good service, made simple.</h1>
-        <p class="welcome-copy">Keep orders moving and every customer in the loop.</p>
-      </div>
-      <div class="today-chip"><span class="live-dot"></span><span id="todayLabel">Today</span></div>
-      <span class="hero-bubble hero-bubble-one" aria-hidden="true"></span>
-      <span class="hero-bubble hero-bubble-two" aria-hidden="true"></span>
-    </section>
-
     <section class="stats-grid" aria-label="Order overview">
       <article class="stat-card">
         <span class="stat-icon icon-orders" aria-hidden="true">▤</span>
@@ -117,26 +105,6 @@
       </div>
     </section>
 
-    <section id="salesView" class="view-panel" hidden>
-      <div class="section-heading">
-        <div>
-          <p class="eyebrow">BUSINESS PERFORMANCE</p>
-          <h2>Monthly sales</h2>
-          <p class="section-copy">A rolling 12-month view based on customer orders.</p>
-        </div>
-        <button id="salesRefreshBtn" class="button button-secondary" type="button"><span aria-hidden="true">↻</span> Refresh data</button>
-      </div>
-      <div class="sales-summary">
-        <div>
-          <span class="summary-label">Revenue this month</span>
-          <strong id="salesSummaryTotal">₱0</strong>
-        </div>
-        <p id="salesSummaryCaption">Sales are calculated from all recorded orders.</p>
-      </div>
-      <div class="chart-card">
-        <div id="salesChartContainer"><canvas id="salesChart" aria-label="Monthly sales bar chart" role="img"></canvas></div>
-      </div>
-    </section>
   </main>
 
   <div id="ModalOverlay" class="modal-overlay" hidden>
@@ -193,7 +161,6 @@
     </form>
   </div>
 
-  <script src="js/chart.js"></script>
   <script src="js/Employee.js"></script>
 </body>
 </html>

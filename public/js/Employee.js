@@ -4,8 +4,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("customerForm");
   const tableBody = document.querySelector("#customerTable tbody");
   const searchInput = document.getElementById("searchInput");
-  const recordsView = document.getElementById("recordsView");
-  const salesView = document.getElementById("salesView");
   const notice = document.getElementById("notice");
   const emptyState = document.getElementById("emptyState");
   const recordCount = document.getElementById("recordCount");
@@ -24,12 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
   const weightTiers = ["up to 5 kg", "5.1–10 kg", "over 10 kg"];
   let customers = [];
-  let salesChart = null;
   let noticeTimer;
-
-  document.getElementById("todayLabel").textContent = new Intl.DateTimeFormat("en-PH", {
-    weekday: "long", month: "long", day: "numeric"
-  }).format(new Date());
 
   async function apiRequest(path, options = {}) {
     let response;
@@ -228,83 +221,22 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("ordersPending").textContent = String(pending);
     document.getElementById("ordersReady").textContent = String(ready);
     document.getElementById("salesThisMonth").textContent = amount(monthSales);
-    document.getElementById("salesSummaryTotal").textContent = amount(monthSales);
-    document.getElementById("salesSummaryCaption").textContent = `${todayCustomers.length} orders recorded today · ${customers.length} orders in the records`;
-  }
-
-  function renderSalesChart() {
-    const canvas = document.getElementById("salesChart");
-    const isDark = document.documentElement.dataset.theme === "dark";
-    if (typeof Chart === "undefined") {
-      showNotice("The sales chart library could not be loaded. Check your connection and refresh.");
-      return;
-    }
-
-    const now = new Date();
-    const monthSlots = Array.from({ length: 12 }, (_, index) => {
-      const date = new Date(now.getFullYear(), now.getMonth() - 11 + index, 1);
-      return {
-        key: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`,
-        label: new Intl.DateTimeFormat("en", { month: "short", year: "2-digit" }).format(date),
-        total: 0
-      };
-    });
-    const totalsByMonth = new Map(monthSlots.map(slot => [slot.key, 0]));
-    customers.forEach(customer => {
-      const key = customerDateKey(customer.created_at).slice(0, 7);
-      if (totalsByMonth.has(key)) totalsByMonth.set(key, totalsByMonth.get(key) + (Number(customer.price) || 0));
-    });
-    monthSlots.forEach(slot => { slot.total = totalsByMonth.get(slot.key); });
-
-    if (salesChart) salesChart.destroy();
-    salesChart = new Chart(canvas.getContext("2d"), {
-      type: "bar",
-      data: {
-        labels: monthSlots.map(slot => slot.label),
-        datasets: [{
-          label: "Sales",
-          data: monthSlots.map(slot => slot.total),
-          backgroundColor: monthSlots.map((_, index) => index === 11 ? "rgba(110, 82, 181, .86)" : "rgba(166, 148, 213, .48)"),
-          borderColor: monthSlots.map((_, index) => index === 11 ? "#6e52b5" : "#a694d5"),
-          borderWidth: 1,
-          borderRadius: 7,
-          maxBarThickness: 42
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          tooltip: { callbacks: { label: context => ` ${amount(context.parsed.y)}` } }
-        },
-        scales: {
-          x: { grid: { display: false }, ticks: { color: isDark ? "#aaa4bd" : "#858195", maxRotation: 0, autoSkip: true } },
-          y: {
-            beginAtZero: true,
-            grid: { color: isDark ? "rgba(255,255,255,.08)" : "#f0eef4" },
-            ticks: { color: isDark ? "#aaa4bd" : "#858195", callback: value => `₱${Number(value).toLocaleString("en-PH")}` }
-          }
-        }
-      }
-    });
   }
 
   async function loadCustomers(showError = true) {
-    const refreshButtons = [document.getElementById("refreshBtn"), document.getElementById("salesRefreshBtn")];
-    refreshButtons.forEach(button => { button.disabled = true; });
+    const refreshButton = document.getElementById("refreshBtn");
+    refreshButton.disabled = true;
     try {
       const data = await apiRequest("/customers?scope=all");
       if (!Array.isArray(data)) throw new Error("The service returned an invalid customer list.");
       customers = data;
       renderCustomers();
       updateSummary();
-      renderSalesChart();
     } catch (error) {
       if (showError) showNotice(error.message);
       recordCount.textContent = "Could not load orders";
     } finally {
-      refreshButtons.forEach(button => { button.disabled = false; });
+      refreshButton.disabled = false;
     }
   }
 
@@ -325,7 +257,6 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("emptyAddBtn").addEventListener("click", openModal);
   document.getElementById("closeModal").addEventListener("click", closeModal);
   document.getElementById("refreshBtn").addEventListener("click", () => loadCustomers());
-  document.getElementById("salesRefreshBtn").addEventListener("click", () => loadCustomers());
   serviceInput.addEventListener("input", calculatePrice);
   serviceInput.addEventListener("change", calculatePrice);
   kiloInput.addEventListener("input", calculatePrice);
@@ -334,22 +265,6 @@ document.addEventListener("DOMContentLoaded", () => {
   modal.addEventListener("click", event => { if (event.target === modal) closeModal(); });
   document.addEventListener("keydown", event => {
     if (event.key === "Escape" && !modal.hidden) closeModal();
-  });
-
-  document.querySelectorAll(".nav-link[data-view]").forEach(button => {
-    button.addEventListener("click", () => {
-      const showSales = button.dataset.view === "sales";
-      recordsView.hidden = showSales;
-      salesView.hidden = !showSales;
-      document.querySelectorAll(".nav-link[data-view]").forEach(link => {
-        link.classList.toggle("is-active", link === button);
-        link.setAttribute("aria-current", link === button ? "page" : "false");
-      });
-      if (showSales && !salesChart) renderSalesChart();
-    });
-  });
-  document.addEventListener("themechange", () => {
-    if (salesChart) renderSalesChart();
   });
 
   form.addEventListener("submit", async event => {
