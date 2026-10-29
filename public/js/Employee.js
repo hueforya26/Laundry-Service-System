@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const API_URL = (window.LAUNDRY_API_URL || "laundry-service-system-production-a33c.up.railway.app").replace(/\/$/, "");
+  const API_URL = (window.LAUNDRY_API_URL || "laundry-service-system-production.up.railway.app").replace(/\/$/, "");
   const modal = document.getElementById("ModalOverlay");
   const form = document.getElementById("customerForm");
   const tableBody = document.querySelector("#customerTable tbody");

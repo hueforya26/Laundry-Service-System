@@ -5,7 +5,7 @@
   if (!stage) return;
 
 
-  var API_BASE = (window.LAUNDRY_API_URL || 'laundry-service-system-production-a33c.up.railway.app').replace(/\/+$/, '');
+  var API_BASE = (window.LAUNDRY_API_URL || 'laundry-service-system-production.up.railway.app').replace(/\/+$/, '');
 
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
