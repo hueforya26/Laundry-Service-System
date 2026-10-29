@@ -15,28 +15,36 @@
 <body>
   <main id="adminLogin" class="admin-login-shell">
     <section class="admin-login-card" aria-labelledby="adminLoginTitle">
-      <a class="brand admin-login-brand" href="Admin.html" aria-label="Fresh'n Klean admin">
-        <span class="brand-mark" aria-hidden="true">FK</span>
-        <span class="brand-copy">
-          <strong>Fresh'n Klean</strong>
-          <small>ADMIN ACCESS</small>
+      <div class="admin-login-brand">
+        <span class="admin-login-mark" aria-hidden="true">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg" focusable="false">
+            <path d="M20.25 0.75H3.75C2.92157 0.75 2.25 1.42157 2.25 2.25V21.75C2.25 22.5784 2.92157 23.25 3.75 23.25H20.25C21.0784 23.25 21.75 22.5784 21.75 21.75V2.25C21.75 1.42157 21.0784 0.75 20.25 0.75Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M5.25 3.75H8.25" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M19 3.20001V4.20001" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M16 3.20001V4.20001" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M2.25 6.75H21.75" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12 20.25C14.8995 20.25 17.25 17.8995 17.25 15C17.25 12.1005 14.8995 9.75 12 9.75C9.10051 9.75 6.75 12.1005 6.75 15C6.75 17.8995 9.10051 20.25 12 20.25Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M9.75 15C9.75 14.4033 9.98705 13.831 10.409 13.409C10.818 13 11.3683 12.7647 11.9451 12.7507" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
         </span>
-      </a>
-      <span class="admin-login-icon" aria-hidden="true">↗</span>
-      <p class="eyebrow">ADMINISTRATOR ACCESS</p>
+        <strong>Fresh'n Klean</strong>
+        <small>ADMIN ACCESS</small>
+      </div>
+
+      <h2 id="adminLoginTitle">Administrator access</h2>
+      <p class="admin-login-copy">Enter the admin password to open the dashboard.</p>
+
       <form id="adminLoginForm">
         <label for="adminPassword">Password</label>
-        <input id="adminPassword" name="password" type="password" placeholder="Enter admin password" autocomplete="current-password" required>
+        <div class="admin-login-field">
+          <input id="adminPassword" name="password" type="password" placeholder="Enter admin password" autocomplete="current-password" required>
+          <button type="button" class="admin-login-toggle" id="adminShowPassword" aria-label="Show password">Show</button>
+        </div>
         <p id="adminLoginMessage" class="admin-login-message" role="alert" aria-live="polite"></p>
-        <button class="button button-primary admin-login-button" type="submit">Open dashboard <span aria-hidden="true">→</span></button>
+        <button class="admin-login-button" type="submit">Open dashboard <span aria-hidden="true">→</span></button>
       </form>
-      <button class="theme-toggle admin-login-theme" type="button" data-theme-toggle aria-label="Switch to dark mode">
-        <span class="theme-toggle-icon" aria-hidden="true">☾</span>
-        <span class="theme-toggle-label">Dark mode</span>
-        <span class="theme-toggle-track" aria-hidden="true"><span class="theme-toggle-thumb"></span></span>
-      </button>
-      <span class="admin-login-bubble admin-login-bubble-one" aria-hidden="true"></span>
-      <span class="admin-login-bubble admin-login-bubble-two" aria-hidden="true"></span>
+
+      <a class="admin-login-back" href="Employee.html">← Back to employee page</a>
     </section>
   </main>
 
@@ -138,6 +146,21 @@
 
   </div>
 
+  <script>
+    
+    (function () {
+      var input = document.getElementById("adminPassword");
+      var button = document.getElementById("adminShowPassword");
+      if (!input || !button) return;
+      button.addEventListener("click", function () {
+        var showing = input.type === "text";
+        input.type = showing ? "password" : "text";
+        button.textContent = showing ? "Show" : "Hide";
+        button.setAttribute("aria-label", showing ? "Show password" : "Hide password");
+        input.focus();
+      });
+    })();
+  </script>
   <script src="js/Admin.js"></script>
 </body>
 </html>

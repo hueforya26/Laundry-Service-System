@@ -1,6 +1,3 @@
-/* Fresh'n Klean — Sales & revenue (dark purple) shown behind the admin login.
-   Every class is prefixed "fk-" so it cannot clash with Employee.css / Admin.css. */
-
 #fkStage {
   --fk-bg: #170530;
   --fk-card-2: rgba(255, 255, 255, 0.12);
@@ -103,7 +100,6 @@
   padding: 18px clamp(16px, 4vw, 44px) 24px;
 }
 
-/* ---------- background: waves, bubbles, sparks ---------- */
 
 .fk-bubbles {
   position: fixed;
@@ -213,7 +209,7 @@
   }
 }
 
-/* ---------- top bar ---------- */
+
 
 .fk-bar {
   position: relative;
@@ -330,7 +326,7 @@
   border-color: rgba(255, 127, 144, 0.7);
 }
 
-/* ---------- segmented controls ---------- */
+
 
 .fk-seg {
   position: relative;
@@ -389,7 +385,7 @@
   font-size: 13px;
 }
 
-/* ---------- page head ---------- */
+
 
 .fk-top {
   display: flex;
@@ -463,7 +459,7 @@
   height: 22px;
 }
 
-/* ---------- date box ---------- */
+
 
 .fk-datebox {
   position: relative;
@@ -522,7 +518,7 @@
   cursor: pointer;
 }
 
-/* ---------- cards + stats ---------- */
+
 
 .fk-card {
   padding: 14px 18px;
@@ -599,7 +595,7 @@
   font-family: var(--fk-head);
 }
 
-/* ---------- chart ---------- */
+
 
 #fkChart {
   max-width: min(100%, max(340px, calc((100vh / 0.7 - 580px) * 2.667)));
@@ -759,53 +755,214 @@ svg.fk-chart text {
 /* the stage fills the whole page */
 body { margin: 0; }
 
-/* ===== Admin login overlay (moved from the <style> block in Admin.html) ===== */
-   
+
+/* ===== Admin login (glass, compact) ===== */
+
 #adminLogin {
   position: fixed;
   inset: 0;
   z-index: 1000;
-  overflow-y: auto;
-  background: rgba(40, 14, 84, 0.5);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-}
-#adminLogin[hidden] { display: none !important; }
-:root[data-theme="dark"] #adminLogin { background: rgba(20, 6, 44, 0.6); }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) #adminLogin { background: rgba(20, 6, 44, 0.6); }
-}
-#adminDashboard[hidden] { display: block !important; }
-
-
-:where(#adminLogin) {
   display: grid;
   place-items: center;
-  padding: 24px;
-}
-:where(#adminLogin) .admin-login-card {
-  position: relative;
-  width: min(420px, 100%);
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  padding: 32px 28px;
-  border-radius: 26px;
   overflow: hidden;
+  padding: 24px;
+  background: rgba(14, 4, 34, 0.6);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  color: #f6f1ff;
+  font-family: "Manrope", "DM Sans", "Segoe UI", sans-serif;
+}
+
+#adminLogin[hidden] { display: none !important; }
+#adminDashboard[hidden] { display: block !important; }
+
+#adminLogin *,
+#adminLogin *::before,
+#adminLogin *::after { box-sizing: border-box; }
+
+#adminLogin .admin-login-card {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 370px);
+  padding: 30px 30px 22px;
+  border: 1px solid transparent;
+  border-radius: 22px;
+  background: linear-gradient(150deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0.07));
+  box-shadow:
+    0 26px 70px rgba(6, 1, 20, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  -webkit-backdrop-filter: blur(22px) saturate(140%);
+  backdrop-filter: blur(22px) saturate(140%);
+}
+
+/* teal to violet border line */
+#adminLogin .admin-login-card::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  padding: 1.5px;
+  border-radius: 23px;
+  background: linear-gradient(135deg, rgba(39, 220, 188, 0.95), rgba(255, 255, 255, 0.28) 45%, rgba(178, 112, 255, 0.95));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  pointer-events: none;
+}
+
+#adminLogin .admin-login-brand {
+  display: grid;
+  justify-items: center;
+  gap: 3px;
+  margin-bottom: 20px;
   color: #fff;
-  background: linear-gradient(145deg, rgba(255,255,255,.16), rgba(255,255,255,.05));
-  border: 1px solid rgba(160,100,230,.35);
-  box-shadow: 0 24px 60px rgba(22,4,45,.5), inset 0 1px 0 rgba(255,255,255,.3);
-  -webkit-backdrop-filter: blur(16px);
-  backdrop-filter: blur(16px);
 }
-:where(#adminLogin) .admin-login-card label { font-weight: 700; }
-:where(#adminLogin) .admin-login-card input {
+
+#adminLogin .admin-login-mark {
+  display: grid;
+  place-items: center;
+  width: 50px;
+  height: 50px;
+  margin-bottom: 8px;
+  border-radius: 14px;
+  color: #fff;
+  background: linear-gradient(145deg, #2fe0c7, #0f9f93);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  box-shadow: 0 8px 22px rgba(20, 200, 180, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+
+#adminLogin .admin-login-mark svg { width: 25px; height: 25px; }
+
+#adminLogin .admin-login-brand strong {
+  font-family: "Sora", "Manrope", sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+#adminLogin .admin-login-brand small {
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+}
+
+#adminLogin h2 {
+  margin: 0 0 5px;
+  color: #fff;
+  font-family: "Sora", "Manrope", sans-serif;
+  font-size: 21px;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: -0.02em;
+}
+
+#adminLogin .admin-login-copy {
+  margin: 0 0 18px;
+  color: #fff;
+  font-size: 12px;
+  text-align: center;
+}
+
+#adminLogin label {
+  display: block;
+  margin-bottom: 7px;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+#adminLogin .admin-login-field {
+  position: relative;
+  margin-bottom: 6px;
+}
+
+#adminLogin .admin-login-field input {
   width: 100%;
-  padding: 12px 14px;
-  border-radius: 12px;
-  border: 1px solid rgba(160,100,230,.4);
+  height: 42px;
+  margin: 0;
+  padding: 0 68px 0 14px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.07);
+  color: #fff;
   font: inherit;
-  box-sizing: border-box;
+  font-size: 13px;
 }
-:where(#adminLogin) .admin-login-message { min-height: 1.2em; margin: 0; color: #ff9fb0; }
+
+#adminLogin .admin-login-field input::placeholder { color: rgba(255, 255, 255, 0.78); }
+
+#adminLogin .admin-login-field input:focus {
+  outline: 0;
+  border-color: #27dcbc;
+  box-shadow: 0 0 0 4px rgba(39, 220, 188, 0.18);
+}
+
+#adminLogin .admin-login-toggle {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font: inherit;
+  font-size: 10.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+#adminLogin .admin-login-toggle:hover { background: rgba(255, 255, 255, 0.32); }
+
+#adminLogin .admin-login-message {
+  min-height: 18px;
+  margin: 0 0 10px;
+  color: #ffb4b4;
+  font-size: 12px;
+}
+
+#adminLogin .admin-login-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 42px;
+  border: 0;
+  border-radius: 11px;
+  background: linear-gradient(135deg, #33e6c8, #18b8b0);
+  color: #04302b;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 0 22px rgba(39, 220, 188, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+#adminLogin .admin-login-button:hover { opacity: 0.92; }
+
+#adminLogin .admin-login-back {
+  display: block;
+  margin-top: 16px;
+  padding-top: 13px;
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+  color: #fff;
+  font-size: 11.5px;
+  text-align: center;
+  text-decoration: none;
+}
+
+#adminLogin .admin-login-back:hover { color: #fff; }
+
+#adminLogin :focus-visible {
+  outline: 2px solid #27dcbc;
+  outline-offset: 2px;
+}
+
+@media (max-width: 480px) {
+  #adminLogin { padding: 14px; }
+  #adminLogin .admin-login-card { padding: 28px 20px 20px; }
+}

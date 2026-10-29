@@ -299,7 +299,7 @@
   dateEl.addEventListener('change', function () { animStats = true; renderSales(); });
 
 
-  /* ---- admin login (demo only: the password is checked in the browser) ---- */
+  
   var ADMIN_PASSWORD = 'admin123';
   var login = document.getElementById('adminLogin');
   var dash = document.getElementById('adminDashboard');
@@ -307,7 +307,7 @@
   var pw = document.getElementById('adminPassword');
   var msg = document.getElementById('adminLoginMessage');
 
-  // locked = true shows the login in front; the sales page stays rendered behind it.
+  
   function setLocked(locked) {
     login.hidden = !locked;
     dash.hidden = false;
@@ -328,9 +328,9 @@
     }
   });
 
+
   $('#fkLogout').addEventListener('click', function () {
-    setLocked(true);
-    pw.focus();
+    window.location.href = 'Employee.html';
   });
 
   document.addEventListener('visibilitychange', function () {
