@@ -682,7 +682,7 @@ svg.fk-chart text {
   box-shadow: 0 0 14px rgba(255, 127, 144, 0.5);
 }
 
-/* ---------- small screens ---------- */
+
 
 @media (max-width: 640px) {
   .fk-bar {
@@ -752,11 +752,9 @@ svg.fk-chart text {
   }
 }
 
-/* the stage fills the whole page */
+
 body { margin: 0; }
 
-
-/* ===== Admin login (glass, compact) ===== */
 
 #adminLogin {
   position: fixed;
@@ -795,7 +793,7 @@ body { margin: 0; }
   backdrop-filter: blur(22px) saturate(140%);
 }
 
-/* teal to violet border line */
+
 #adminLogin .admin-login-card::before {
   content: "";
   position: absolute;
@@ -804,8 +802,9 @@ body { margin: 0; }
   border-radius: 23px;
   background: linear-gradient(135deg, rgba(39, 220, 188, 0.95), rgba(255, 255, 255, 0.28) 45%, rgba(178, 112, 255, 0.95));
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  -webkit-mask-composite: exclude;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
   pointer-events: none;
 }
 
