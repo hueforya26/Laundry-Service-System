@@ -5,7 +5,9 @@
   if (!stage) return;
 
 
-  var API_BASE = (window.LAUNDRY_API_URL || 'https://laundry-service-system-production.up.railway.app').replace(/\/+$/, '');
+  var DEFAULT_API = 'https://laundry-service-system-production.up.railway.app';
+  var servedFromRailway = /^https?:$/.test(location.protocol) && /\.up\.railway\.app$/i.test(location.hostname);
+  var API_BASE = (window.LAUNDRY_API_URL || (servedFromRailway ? location.origin : DEFAULT_API)).replace(/\/+$/, '');
   if (!/^https?:\/\//i.test(API_BASE)) API_BASE = 'https://' + API_BASE;
 
   var $ = function (s, r) { return (r || document).querySelector(s); };
@@ -45,9 +47,11 @@
     var status = String(pick(r, ['status', 'order_status', 'orderStatus']) || '').trim();
     var created = parseDate(pick(r, ['created_at', 'createdAt', 'order_date', 'orderDate', 'date', 'created']));
     var doneAt = parseDate(pick(r, ['completed_at', 'completedAt', 'picked_up_at', 'pickedUpAt', 'updated_at', 'updatedAt']));
-    var lower = status.toLowerCase();
+    var lower = status.toLowerCase().replace(/[_-]+/g, ' ');
     var cancelled = /cancel/.test(lower);
-    var completed = !cancelled && /(complete|picked|claimed|done)/.test(lower) && !/\bnot\b/.test(lower);
+    var completed = !cancelled &&
+      !/^(unclaimed|incomplete|pending|ready|processing|washing|in progress)/.test(lower) &&
+      !/\bnot\b/.test(lower) && /(complete|picked|claimed|done|released|delivered)/.test(lower);
     return {
       price: Number(pick(r, ['price', 'total', 'amount']) || 0) || 0,
       completed: completed,
@@ -81,7 +85,6 @@
   function getCompleted(start, end) {
     return orders.filter(function (o) { return o.completed && o.when >= start && o.when < end; });
   }
-  // Earnings: every recorded (non-cancelled) order, dated by when it was created.
   function getSales(start, end) {
     return orders.filter(function (o) { return !o.cancelled && o.created && o.created >= start && o.created < end; });
   }
@@ -307,7 +310,9 @@
   var dateEl = $('#fkDate');
   dateEl.max = toInput(today0);
   dateEl.value = toInput(today0);
-  dateEl.addEventListener('change', function () { animStats = true; renderSales(); });
+  var onDate = function () { animStats = true; renderSales(); };
+  dateEl.addEventListener('change', onDate);
+  dateEl.addEventListener('input', onDate);
 
 
   
@@ -341,15 +346,13 @@
 
 
   $('#fkLogout').addEventListener('click', function () {
-    window.location.href = 'Employee.html';
+    window.location.href = 'index.html';
   });
 
   document.addEventListener('visibilitychange', function () {
-    if (!document.hidden && loadState !== 'loading') loadOrders();
+    if (!document.hidden && loadState !== 'loading' && !dash.hasAttribute('inert')) loadOrders();
   });
 
   setLocked(true);
-
   renderSales();
-  loadOrders();
 })();
