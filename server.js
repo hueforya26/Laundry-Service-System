@@ -74,12 +74,16 @@ app.get("/customers", async (req, res) => {
 app.post("/addCustomer", async (req, res) => {
   const { name, service, kilo, price } = req.body;
 
-  const contact =
-    typeof req.body.phone === "string"
-      ? req.body.phone.trim()
-      : typeof req.body.email === "string"
-        ? req.body.email.trim()
-        : "";
+  const rawContact = [req.body.contact, req.body.phone, req.body.email].find(
+    (value) => typeof value === "string" && value.trim() !== ""
+  );
+  const contact = rawContact ? rawContact.trim() : "";
+  const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact);
+  const phoneDigits = contact.replace(/\D/g, "");
+  const isPhone =
+    /^[+\d\s\-()]+$/.test(contact) &&
+    phoneDigits.length >= 7 &&
+    phoneDigits.length <= 15;
 
   const trimmedName =
     typeof name === "string" ? name.trim() : "";
@@ -96,7 +100,8 @@ app.post("/addCustomer", async (req, res) => {
     !trimmedService ||
     trimmedService.length > 80 ||
     !contact ||
-    contact.length > 30 ||
+    contact.length > 100 ||
+    (!isEmail && !isPhone) ||
     !Number.isFinite(numericKilo) ||
     numericKilo <= 0 ||
     numericKilo > 100 ||
@@ -106,7 +111,7 @@ app.post("/addCustomer", async (req, res) => {
   ) {
     return res.status(400).json({
       message:
-        "Enter a valid name, service, contact number, weight, and price.",
+        "Enter a valid name, service, phone number or email, weight, and price.",
     });
   }
 
@@ -119,10 +124,14 @@ app.post("/addCustomer", async (req, res) => {
 
     const customerResult = await client.query(
       `INSERT INTO public.customers
-         (name, phone, created_at)
-       VALUES ($1, $2, NOW())
+         (name, phone, email, created_at)
+       VALUES ($1, $2, $3, NOW())
        RETURNING id`,
-      [trimmedName, contact]
+      [
+        trimmedName,
+        isEmail ? null : contact,
+        isEmail ? contact.toLowerCase() : null,
+      ]
     );
 
     const customerId = customerResult.rows[0].id;
@@ -130,8 +139,8 @@ app.post("/addCustomer", async (req, res) => {
     const orderResult = await client.query(
       `INSERT INTO public.orders
          (customer_id, service, kilo, price,
-          order_status, created_at, updated_at)
-       VALUES ($1, $2, $3, $4, 'Pending', NOW(), NOW())
+          order_status, status, amount_paid, created_at, updated_at)
+       VALUES ($1, $2, $3, $4, 'Pending', 'Pending', 0, NOW(), NOW())
        RETURNING id`,
       [
         customerId,
@@ -162,6 +171,7 @@ app.post("/addCustomer", async (req, res) => {
     res.status(500).json({
       message:
         "Could not add the customer order. Check the backend logs.",
+      code: err.code || undefined,
     });
   } finally {
     if (client) {

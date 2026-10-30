@@ -110,7 +110,7 @@
   function getRange(t, d) {
     if (t === 'daily') return { start: d, end: addDays(d, 1) };
     if (t === 'weekly') {
-      var s = addDays(d, -((d.getDay() + 6) % 7)); // Mon–Sun
+      var s = addDays(d, -((d.getDay() + 6) % 7));
       return { start: s, end: addDays(s, 7) };
     }
     var m = new Date(d.getFullYear(), d.getMonth(), 1);

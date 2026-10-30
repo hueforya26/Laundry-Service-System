@@ -156,8 +156,8 @@
         </div>
       </details>
 
-      <label for="number">Contact number</label>
-      <input type="tel" id="number" name="number" placeholder="e.g. 09XX XXX XXXX" maxlength="20" required>
+      <label for="number">Contact (phone or email)</label>
+      <input type="text" id="number" name="number" placeholder="e.g. 09XX XXX XXXX or name@email.com" maxlength="100" autocomplete="off" required>
       <p id="formError" class="form-error" role="alert" hidden></p>
       <button id="saveBtn" class="button button-primary button-wide" type="submit">Save customer</button>
     </form>

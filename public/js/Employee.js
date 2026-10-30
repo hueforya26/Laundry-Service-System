@@ -40,7 +40,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const result = await response.json().catch(() => ({}));
     if (!response.ok) {
-      throw new Error(result.message || `The request failed (${response.status}).`);
+      const code = result.code ? ` (error code ${result.code})` : "";
+      throw new Error((result.message || `The request failed (${response.status}).`) + code);
     }
     return result;
   }
@@ -97,7 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderCustomers() {
     const filter = searchInput.value.trim().toLocaleLowerCase();
     const filteredCustomers = customers.filter(customer => [
-      customer.name, customer.service, customer.kilo, customer.price, customer.email, customer.status
+      customer.name, customer.service, customer.kilo, customer.price, customer.phone, customer.email, customer.status
     ].some(value => String(value ?? "").toLocaleLowerCase().includes(filter)));
 
     tableBody.replaceChildren();
@@ -122,7 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
       addCell(row, customer.service || "—");
       addCell(row, `${customer.kilo ?? "—"} kg`);
       addCell(row, amount(customer.price));
-      addCell(row, customer.email || "—");
+      addCell(row, customer.phone || customer.email || "—");
 
       const statusCell = addCell(row, "", "status-cell");
       const statusSelect = document.createElement("select");
@@ -279,8 +280,11 @@ document.addEventListener("DOMContentLoaded", () => {
       formError.hidden = false;
       return;
     }
-    if (contact.length < 7) {
-      formError.textContent = "Enter a valid contact number with at least 7 characters.";
+    const phoneDigits = contact.replace(/\D/g, "");
+    const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact);
+    const isPhone = /^[+\d\s\-()]+$/.test(contact) && phoneDigits.length >= 7 && phoneDigits.length <= 15;
+    if (!isEmail && !isPhone) {
+      formError.textContent = "Enter a valid phone number or email address.";
       formError.hidden = false;
       return;
     }
@@ -295,7 +299,7 @@ document.addEventListener("DOMContentLoaded", () => {
           service: document.getElementById("service").value,
           kilo: weight,
           price,
-          email: contact
+          contact
         })
       });
       closeModal();
