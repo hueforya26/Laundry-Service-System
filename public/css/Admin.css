@@ -12,8 +12,8 @@
   --fk-body: "Manrope", system-ui, sans-serif;
 
   position: relative;
-  zoom: 0.7;
-  min-height: calc(100vh / 0.7);
+  zoom: 0.78;
+  min-height: calc(100vh / 0.78);
   overflow-x: hidden;
   font-family: var(--fk-body);
   color: var(--fk-text);
@@ -90,14 +90,14 @@
 .fk-app {
   position: relative;
   z-index: 1;
-  min-height: calc(100vh / 0.7);
+  min-height: calc(100vh / 0.78);
   padding-top: 18px;
 }
 
 .fk-main {
-  max-width: 1120px;
+  max-width: 1500px;
   margin: 0 auto;
-  padding: 18px clamp(16px, 4vw, 44px) 24px;
+  padding: 10px clamp(16px, 4vw, 44px) 6px;
 }
 
 
@@ -600,7 +600,7 @@
 
 
 #fkChart {
-  max-width: min(100%, max(340px, calc((100vh / 0.7 - 580px) * 2.667)));
+  max-width: min(100%, 740px, max(340px, calc((100vh / 0.78 - 580px) * 2.667)));
   margin: 0 auto;
 }
 
@@ -845,7 +845,7 @@ svg.fk-chart text {
 }
 
 
-body { margin: 0; }
+html, body { margin: 0; overflow-y: hidden; }
 
 
 #adminLogin {
