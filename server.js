@@ -139,8 +139,8 @@ app.post("/addCustomer", async (req, res) => {
     const orderResult = await client.query(
       `INSERT INTO public.orders
          (customer_id, service, kilo, price,
-          order_status, status, amount_paid, created_at, updated_at)
-       VALUES ($1, $2, $3, $4, 'Pending', 'Pending', 0, NOW(), NOW())
+          order_status, created_at, updated_at)
+       VALUES ($1, $2, $3, $4, 'Pending', NOW(), NOW())
        RETURNING id`,
       [
         customerId,
@@ -265,5 +265,5 @@ app.delete("/deleteCustomer/:id", async (req, res) => {
 });
 
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
