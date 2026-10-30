@@ -47,6 +47,7 @@ app.get("/customers", async (req, res) => {
       o.kilo,
       o.price,
       o.created_at,
+      o.updated_at,
       COALESCE(o.order_status, o.status, 'Pending') AS status
     FROM public.orders AS o
     JOIN public.customers AS c

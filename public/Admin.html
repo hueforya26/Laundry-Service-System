@@ -132,6 +132,7 @@
 
           <div class="fk-stats" id="fkStats"></div>
 
+          <div class="fk-row">
           <div class="fk-card">
             <div class="fk-card-h">
               <div class="fk-card-t">
@@ -148,6 +149,43 @@
             </div>
             <div id="fkChart"></div>
             <div class="fk-rule" id="fkRule"><span class="fk-tick" aria-hidden="true"><svg class="fk-ic"><use href="#fk-i-check"/></svg></span><span id="fkRuleTxt"></span></div>
+          </div>
+
+            <div class="fk-card fk-break-card" aria-labelledby="fkBreakTitle">
+              <div class="fk-card-h">
+                <div class="fk-card-t">
+                  <span class="fk-ico fk-teal"><svg class="fk-ic"><use href="#fk-i-coins"/></svg></span>
+                  <div>
+                    <h2 id="fkBreakTitle">Service breakdown</h2>
+                    <div class="fk-readout">Revenue and orders per service</div>
+                  </div>
+                </div>
+              </div>
+              <div id="fkBreak"></div>
+              <div class="fk-break-note" id="fkBreakNote"></div>
+            </div>
+          </div>
+
+          <div class="fk-card fk-stuck-card" aria-labelledby="fkStuckTitle">
+            <div class="fk-card-h">
+              <div class="fk-card-t">
+                <span class="fk-ico fk-teal"><svg class="fk-ic"><use href="#fk-i-clip"/></svg></span>
+                <div>
+                  <h2 id="fkStuckTitle">Stuck order alerts</h2>
+                  <div class="fk-readout" id="fkStuckSub"></div>
+                </div>
+              </div>
+              <button id="fkStuckToggle" class="fk-btn" type="button" hidden>Show all</button>
+            </div>
+            <div class="fk-tablewrap">
+              <table class="fk-stuck-table">
+                <thead>
+                  <tr><th scope="col">Customer</th><th scope="col">Service</th><th scope="col">Price</th><th scope="col">Status</th><th scope="col">Waiting</th></tr>
+                </thead>
+                <tbody id="fkStuckBody"></tbody>
+              </table>
+            </div>
+            <div class="fk-stuck-empty" id="fkStuckEmpty" hidden></div>
           </div>
         </section>
       </main>

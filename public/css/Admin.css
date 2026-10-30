@@ -158,6 +158,8 @@
   animation-delay: -1.5s;
 }
 
+
+
 @keyframes fk-wave-flow {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
@@ -682,7 +684,97 @@ svg.fk-chart text {
   box-shadow: 0 0 14px rgba(255, 127, 144, 0.5);
 }
 
+.fk-row {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: 10px;
+  margin-bottom: 10px;
+}
 
+.fk-row > .fk-card { margin: 0; }
+
+.fk-break-card #fkBreak {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 12px;
+}
+
+.fk-brk-h {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.fk-brk-track {
+  height: 12px;
+  margin-top: 6px;
+  border-radius: 999px;
+  background: rgba(30, 6, 62, 0.45);
+  overflow: hidden;
+}
+
+.fk-brk-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.5s ease;
+}
+
+.fk-break-note,
+.fk-empty,
+.fk-stuck-empty {
+  margin-top: 14px;
+  font-size: 14px;
+  color: #fff;
+}
+
+.fk-break-note:empty { display: none; }
+
+.fk-stuck-card { margin-bottom: 10px; }
+
+.fk-tablewrap { margin-top: 8px; overflow-x: auto; }
+.fk-tablewrap[hidden], .fk-stuck-empty[hidden] { display: none; }
+
+.fk-stuck-table {
+  width: 100%;
+  min-width: 560px;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.fk-stuck-table th {
+  padding: 8px 12px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  opacity: 0.85;
+}
+
+.fk-stuck-table td {
+  padding: 10px 12px;
+  border-top: 1px solid var(--fk-line);
+}
+
+.fk-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.fk-b-ready { background: #ffd98a; color: #3a2a00; }
+.fk-b-pending { background: #d9cffa; color: #20104a; }
+.fk-d-warn { background: #ffd98a; color: #3a2a00; }
+.fk-d-late { background: #ff9a9a; color: #3a0a0a; }
+
+@media (max-width: 900px) {
+  .fk-row { grid-template-columns: minmax(0, 1fr); }
+}
 
 @media (max-width: 640px) {
   .fk-bar {

@@ -52,11 +52,18 @@
     var completed = !cancelled &&
       !/^(unclaimed|incomplete|pending|ready|processing|washing|in progress)/.test(lower) &&
       !/\bnot\b/.test(lower) && /(complete|picked|claimed|done|released|delivered)/.test(lower);
+    var updated = parseDate(pick(r, ['updated_at', 'updatedAt']));
+    var ready = !completed && !cancelled && /ready/.test(lower);
     return {
+      name: String(pick(r, ['name', 'customer_name', 'customerName']) || 'Unnamed customer'),
+      service: String(pick(r, ['service', 'service_type', 'serviceType']) || '').trim() || 'Other',
       price: Number(pick(r, ['price', 'total', 'amount']) || 0) || 0,
       completed: completed,
       cancelled: cancelled,
+      ready: ready,
       created: created,
+      // Ready orders wait from when they became ready; pending ones from when they were placed.
+      since: ready ? (updated || created) : created,
       when: completed ? (doneAt || created) : created
     };
   }
@@ -88,6 +95,75 @@
   function getSales(start, end) {
     return orders.filter(function (o) { return !o.cancelled && o.created && o.created >= start && o.created < end; });
   }
+  var STUCK_DAYS = 2;
+  var STUCK_PREVIEW = 5;
+  var showAllStuck = false;
+  var BREAK_COLORS = ['#58f3de', '#b69cff', '#ffd98a', '#ff9ec4', '#8fd0ff'];
+
+  function stuckOrders() {
+    var now = Date.now();
+    return orders
+      .filter(function (o) { return !o.completed && !o.cancelled && o.since; })
+      .map(function (o) { return { o: o, days: Math.floor((now - o.since) / DAY) }; })
+      .filter(function (x) { return x.days >= STUCK_DAYS; })
+      .sort(function (a, b) { return b.days - a.days; });
+  }
+
+  function renderBreakdown(sales) {
+    var box = $('#fkBreak'), note = $('#fkBreakNote');
+    var map = {}, total = 0;
+    sales.forEach(function (o) {
+      var m = map[o.service] || (map[o.service] = { name: o.service, rev: 0, n: 0 });
+      m.rev += o.price; m.n++; total += o.price;
+    });
+    var rows = Object.keys(map).map(function (k) { return map[k]; })
+      .sort(function (a, b) { return b.rev - a.rev; });
+    if (!rows.length) {
+      box.innerHTML = '<p class="fk-empty">' + (loadState === 'loading' ? 'Loading orders…'
+        : loadState === 'error' ? 'Orders could not be loaded.' : 'No orders in this range.') + '</p>';
+      note.textContent = '';
+      return;
+    }
+    var max = rows[0].rev || 1;
+    box.innerHTML = rows.map(function (r, i) {
+      return '<div class="fk-brk"><div class="fk-brk-h"><span>' + esc(r.name) + '</span><span>' + peso(r.rev) +
+        ' · ' + r.n + ' order' + (r.n === 1 ? '' : 's') + '</span></div>' +
+        '<div class="fk-brk-track"><div class="fk-brk-fill" style="width:' + Math.max(r.rev / max * 100, 2) +
+        '%;background:' + BREAK_COLORS[i % BREAK_COLORS.length] + '"></div></div></div>';
+    }).join('');
+    note.textContent = total > 0
+      ? 'Top earner: ' + rows[0].name + ' (' + Math.round(rows[0].rev / total * 100) + '% of revenue)'
+      : '';
+  }
+
+  function renderStuck() {
+    var list = stuckOrders();
+    var shown = showAllStuck ? list : list.slice(0, STUCK_PREVIEW);
+    var body = $('#fkStuckBody'), empty = $('#fkStuckEmpty'), btn = $('#fkStuckToggle');
+    var wrap = body.closest('.fk-tablewrap');
+
+    $('#fkStuckSub').textContent = loadState === 'loading' ? 'Loading orders…'
+      : loadState === 'error' ? 'Orders could not be loaded.'
+        : 'Orders not completed after ' + STUCK_DAYS + ' days · ' + list.length + ' need' + (list.length === 1 ? 's' : '') + ' attention';
+
+    btn.hidden = list.length <= STUCK_PREVIEW;
+    btn.textContent = showAllStuck ? 'Show less' : 'Show all (' + list.length + ')';
+
+    wrap.hidden = !shown.length;
+    empty.hidden = !!shown.length;
+    empty.textContent = loadState === 'ok' ? 'No stuck orders. Everything is moving on time.' : '';
+    empty.hidden = empty.hidden || !empty.textContent;
+
+    body.innerHTML = shown.map(function (x) {
+      var o = x.o;
+      return '<tr><td>' + esc(o.name) + '</td><td>' + esc(o.service) + '</td><td>' + peso(o.price) + '</td>' +
+        '<td><span class="fk-badge ' + (o.ready ? 'fk-b-ready' : 'fk-b-pending') + '">' +
+        (o.ready ? 'Ready to pick up' : 'Pending') + '</span></td>' +
+        '<td><span class="fk-badge ' + (x.days >= 4 ? 'fk-d-late' : 'fk-d-warn') + '">' +
+        x.days + ' day' + (x.days === 1 ? '' : 's') + '</span></td></tr>';
+    }).join('');
+  }
+
   function inProgress() {
     return orders.filter(function (o) { return !o.completed && !o.cancelled; }).length;
   }
@@ -291,10 +367,16 @@
         ? 'Loading your orders…'
         : 'Earnings count every recorded order (cancelled orders excluded). ' + ip + ' order' + (ip === 1 ? ' is' : 's are') + ' still in progress.';
     }
+    renderBreakdown(sales);
+    renderStuck();
     syncPills();
   }
 
-  
+  $('#fkStuckToggle').addEventListener('click', function () {
+    showAllStuck = !showAllStuck;
+    renderStuck();
+  });
+
   $('#fkTypeSeg').addEventListener('click', function (e) {
     var b = e.target.closest('button'); if (!b) return;
     type = b.dataset.t;
