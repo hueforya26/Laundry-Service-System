@@ -164,6 +164,70 @@
     }).join('');
   }
 
+  var HIST_PAGE = 8;
+  var histPage = 0;
+  var histOpen = false;
+  var histDay = null;
+  var histReturnFocus = null;
+
+  // Order history for the day picked in the modal (newest first).
+  function renderHistory() {
+    var list = getSales(histDay, addDays(histDay, 1)).sort(function (a, b) { return b.created - a.created; });
+    var pages = Math.max(1, Math.ceil(list.length / HIST_PAGE));
+    if (histPage > pages - 1) histPage = pages - 1;
+    var from = histPage * HIST_PAGE;
+    var shown = list.slice(from, from + HIST_PAGE);
+    var body = $('#fkHistBody'), empty = $('#fkHistEmpty');
+    var scroll = $('#fkHistScroll');
+    var total = list.reduce(function (s, o) { return s + o.price; }, 0);
+
+    $('#fkHistSub').textContent = loadState === 'loading' ? 'Loading orders…'
+      : loadState === 'error' ? 'Orders could not be loaded.'
+        : fmtD(histDay, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }) +
+          ' · ' + list.length + ' order' + (list.length === 1 ? '' : 's') + ' · ' + peso(total);
+
+    scroll.hidden = !list.length;
+    empty.textContent = loadState === 'ok' && !list.length ? 'No orders on this date. Pick another history date above.' : '';
+    empty.hidden = !empty.textContent;
+
+    $('#fkHistPager').hidden = list.length <= HIST_PAGE;
+    $('#fkHistPage').textContent = 'Showing ' + (from + 1) + '–' + (from + shown.length) + ' of ' + list.length +
+      ' · Page ' + (histPage + 1) + ' of ' + pages;
+    $('#fkHistPrev').disabled = histPage === 0;
+    $('#fkHistNext').disabled = histPage >= pages - 1;
+
+    body.innerHTML = shown.map(function (o) {
+      var st = o.completed ? ['Completed', 'fk-b-done'] : o.ready ? ['Ready to pick up', 'fk-b-ready'] : ['Pending', 'fk-b-pending'];
+      var when = o.created.toLocaleTimeString('en-PH', { hour: 'numeric', minute: '2-digit' });
+      return '<tr><td>' + esc(when) + '</td><td>' + esc(o.name) + '</td><td>' + esc(o.service) + '</td><td>' + peso(o.price) +
+        '</td><td><span class="fk-badge ' + st[1] + '">' + st[0] + '</span></td></tr>';
+    }).join('');
+  }
+
+  function openHistory() {
+    histOpen = true;
+    histReturnFocus = document.activeElement;
+    // Start on the dashboard's report date; the modal can then move to any other day.
+    histDay = fromInput($('#fkDate').value) || today0;
+    histPage = 0;
+    var input = $('#fkHistDate');
+    input.max = toInput(today0);
+    input.value = toInput(histDay);
+    renderHistory();
+    $('#fkHistModal').hidden = false;
+    $('#fkHistOpen').setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+    $('#fkHistClose').focus();
+  }
+
+  function closeHistory() {
+    histOpen = false;
+    $('#fkHistModal').hidden = true;
+    $('#fkHistOpen').setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+    if (histReturnFocus && histReturnFocus.focus) histReturnFocus.focus();
+  }
+
   function inProgress() {
     return orders.filter(function (o) { return !o.completed && !o.cancelled; }).length;
   }
@@ -369,8 +433,40 @@
     }
     renderBreakdown(sales);
     renderStuck();
+    if (histOpen) renderHistory();
     syncPills();
   }
+
+  $('#fkHistOpen').addEventListener('click', function () { histOpen ? closeHistory() : openHistory(); });
+  $('#fkHistClose').addEventListener('click', closeHistory);
+  var goHistPage = function (step) {
+    histPage += step;
+    renderHistory();
+    $('#fkHistScroll').scrollTop = 0;
+  };
+  $('#fkHistPrev').addEventListener('click', function () { goHistPage(-1); });
+  $('#fkHistNext').addEventListener('click', function () { goHistPage(1); });
+  var onHistDate = function () {
+    var d = fromInput($('#fkHistDate').value);
+    if (!d || d > today0) return;
+    histDay = d;
+    histPage = 0;
+    renderHistory();
+  };
+  $('#fkHistDate').addEventListener('change', onHistDate);
+  $('#fkHistDate').addEventListener('input', onHistDate);
+  $('#fkHistModal').addEventListener('click', function (e) { if (e.target === this) closeHistory(); });
+  document.addEventListener('keydown', function (e) {
+    if (!histOpen) return;
+    if (e.key === 'Escape') { closeHistory(); return; }
+    if (e.key === 'Tab') {
+      var items = [$('#fkHistClose'), $('#fkHistDate'), $('#fkHistScroll'), $('#fkHistPrev'), $('#fkHistNext')]
+        .filter(function (el) { return !el.disabled && !el.closest('[hidden]'); });
+      var i = items.indexOf(document.activeElement);
+      e.preventDefault();
+      items[(i + (e.shiftKey ? -1 : 1) + items.length) % items.length].focus();
+    }
+  });
 
   $('#fkStuckToggle').addEventListener('click', function () {
     showAllStuck = !showAllStuck;

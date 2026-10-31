@@ -100,7 +100,10 @@
             <span class="fk-brand-sub">Laundry shop</span>
           </span>
         </div>
-        <button id="fkLogout" class="fk-btn fk-logout" type="button"><svg class="fk-ic"><use href="#fk-i-logout"/></svg>Log out</button>
+        <div class="fk-hdr-actions">
+          <button id="fkHistOpen" class="fk-btn" type="button" aria-expanded="false" aria-haspopup="dialog" aria-controls="fkHistModal"><svg class="fk-ic"><use href="#fk-i-clip"/></svg>History</button>
+          <button id="fkLogout" class="fk-btn fk-logout" type="button"><svg class="fk-ic"><use href="#fk-i-logout"/></svg>Log out</button>
+        </div>
       </header>
 
       <main class="fk-main">
@@ -189,6 +192,43 @@
           </div>
         </section>
       </main>
+    </div>
+  </div>
+
+  <div id="fkHistModal" class="fk-modal" hidden>
+    <div class="fk-modal-box" role="dialog" aria-modal="true" aria-labelledby="fkHistTitle">
+      <div class="fk-modal-h">
+        <div class="fk-card-t">
+          <span class="fk-ico fk-teal"><svg class="fk-ic"><use href="#fk-i-clip"/></svg></span>
+          <div>
+            <h2 id="fkHistTitle">Order history</h2>
+            <div class="fk-readout" id="fkHistSub"></div>
+          </div>
+        </div>
+        <button id="fkHistClose" class="fk-btn" type="button" aria-label="Close order history">Close ✕</button>
+      </div>
+      <label class="fk-datebox fk-hist-date">
+        <span class="fk-ico fk-xs"><svg class="fk-ic"><use href="#fk-i-cal"/></svg></span>
+        <span class="fk-date-t">
+          <span class="fk-date-lbl">History date</span>
+          <input type="date" id="fkHistDate" required>
+        </span>
+        <svg class="fk-ic fk-chev"><use href="#fk-i-chev"/></svg>
+      </label>
+      <div class="fk-tablewrap fk-modal-body" id="fkHistScroll" tabindex="0">
+        <table class="fk-stuck-table">
+          <thead>
+            <tr><th scope="col">Time</th><th scope="col">Customer</th><th scope="col">Service</th><th scope="col">Price</th><th scope="col">Status</th></tr>
+          </thead>
+          <tbody id="fkHistBody"></tbody>
+        </table>
+      </div>
+      <div class="fk-stuck-empty" id="fkHistEmpty" hidden></div>
+      <div class="fk-pager" id="fkHistPager" hidden>
+        <button id="fkHistPrev" class="fk-btn" type="button">‹ Prev</button>
+        <span id="fkHistPage" aria-live="polite"></span>
+        <button id="fkHistNext" class="fk-btn" type="button">Next ›</button>
+      </div>
     </div>
   </div>
 

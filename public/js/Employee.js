@@ -28,6 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let response;
     try {
       response = await fetch(`${API_URL}${path}`, {
+        cache: "no-store",
         ...options,
         headers: {
           ...(options.body ? { "Content-Type": "application/json" } : {}),
@@ -54,14 +55,38 @@ document.addEventListener("DOMContentLoaded", () => {
     noticeTimer = setTimeout(() => { notice.hidden = true; }, 5000);
   }
 
+  // The shop's day changes at 12:00 AM Manila time, whatever the device's timezone is.
+  const SHOP_TZ = "Asia/Manila";
+  const dayFormatter = new Intl.DateTimeFormat("en-CA", { timeZone: SHOP_TZ, year: "numeric", month: "2-digit", day: "2-digit" });
+
   function localDateKey(date = new Date()) {
-    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+    return dayFormatter.format(date); // YYYY-MM-DD
   }
 
   function customerDateKey(value) {
     if (!value) return "";
     const date = new Date(value);
     return Number.isNaN(date.getTime()) ? "" : localDateKey(date);
+  }
+
+  // How many shop days ago the order was created (0 = today, 1 = yesterday ...).
+  function daysOld(customer) {
+    const key = customerDateKey(customer.created_at);
+    if (!key) return 0;
+    const [ty, tm, td] = localDateKey().split("-").map(Number);
+    const [cy, cm, cd] = key.split("-").map(Number);
+    return Math.round((Date.UTC(ty, tm - 1, td) - Date.UTC(cy, cm - 1, cd)) / 86400000);
+  }
+
+  // Employee view: today's orders, plus yesterday's orders that are not Completed yet.
+  // Anything 2+ days old is hidden here (the admin page keeps the full history).
+  function visibleCustomers() {
+    return customers.filter(customer => {
+      const age = daysOld(customer);
+      if (age <= 0) return true;
+      if (age === 1) return customer.status !== "Completed";
+      return false;
+    });
   }
 
   function amount(value) {
@@ -97,7 +122,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function renderCustomers() {
     const filter = searchInput.value.trim().toLocaleLowerCase();
-    const filteredCustomers = customers.filter(customer => [
+    const visible = visibleCustomers();
+    const filteredCustomers = visible.filter(customer => [
       customer.name, customer.service, customer.kilo, customer.price, customer.phone, customer.email, customer.status
     ].some(value => String(value ?? "").toLocaleLowerCase().includes(filter)));
 
@@ -115,8 +141,14 @@ document.addEventListener("DOMContentLoaded", () => {
         const created = new Date(customer.created_at);
         date.textContent = Number.isNaN(created.getTime())
           ? ""
-          : new Intl.DateTimeFormat("en-PH", { month: "short", day: "numeric" }).format(created);
+          : new Intl.DateTimeFormat("en-PH", { timeZone: SHOP_TZ, month: "short", day: "numeric" }).format(created);
         if (date.textContent) nameCell.appendChild(date);
+      }
+      if (daysOld(customer) === 1) {
+        const tag = document.createElement("span");
+        tag.className = "carryover-tag";
+        tag.textContent = "From yesterday";
+        nameCell.appendChild(tag);
       }
       row.appendChild(nameCell);
 
@@ -185,8 +217,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     recordCount.textContent = filter
-      ? `${filteredCustomers.length} of ${customers.length} orders`
-      : `${customers.length} ${customers.length === 1 ? "order" : "orders"}`;
+      ? `${filteredCustomers.length} of ${visible.length} orders`
+      : `${visible.length} ${visible.length === 1 ? "order" : "orders"}`;
     emptyState.hidden = filteredCustomers.length > 0;
     document.querySelector(".table-scroll").hidden = filteredCustomers.length === 0;
     if (filteredCustomers.length === 0 && filter) {
@@ -212,8 +244,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const today = localDateKey();
     const thisMonth = today.slice(0, 7);
     const todayCustomers = customers.filter(customer => customerDateKey(customer.created_at) === today);
-    const pending = customers.filter(customer => !customer.status || customer.status === "Pending").length;
-    const ready = customers.filter(customer => customer.status === "Ready to pick up").length;
+    const visible = visibleCustomers();
+    const pending = visible.filter(customer => !customer.status || customer.status === "Pending").length;
+    const ready = visible.filter(customer => customer.status === "Ready to pick up").length;
     const monthSales = customers.reduce((total, customer) => (
       customerDateKey(customer.created_at).slice(0, 7) === thisMonth ? total + (Number(customer.price) || 0) : total
     ), 0);
@@ -226,17 +259,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function loadCustomers(showError = true) {
     const refreshButton = document.getElementById("refreshBtn");
+    const refreshLabel = refreshButton.innerHTML;
     refreshButton.disabled = true;
+    refreshButton.innerHTML = '<span aria-hidden="true">↻</span> Refreshing…';
     try {
       const data = await apiRequest("/customers?scope=all");
       if (!Array.isArray(data)) throw new Error("The service returned an invalid customer list.");
       customers = data;
       renderCustomers();
       updateSummary();
+      document.getElementById("ordersTodayNote").textContent = `Updated ${new Intl.DateTimeFormat("en-PH", { hour: "numeric", minute: "2-digit", second: "2-digit" }).format(new Date())}`;
     } catch (error) {
       if (showError) showNotice(error.message);
       recordCount.textContent = "Could not load orders";
     } finally {
+      refreshButton.innerHTML = refreshLabel;
       refreshButton.disabled = false;
     }
   }
