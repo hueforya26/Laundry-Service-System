@@ -1171,3 +1171,93 @@ html, body { margin: 0; overflow-y: hidden; }
   #adminLogin { padding: 14px; }
   #adminLogin .admin-login-card { padding: 28px 20px 20px; }
 }
+
+
+/* ---- Mobile: let the page scroll so Service breakdown and Stuck order alerts are reachable ---- */
+@media (max-width: 900px) {
+  html, body {
+    height: auto;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #fkStage,
+  .fk-app {
+    min-height: 0;
+  }
+
+  #fkChart {
+    max-width: 100%;
+  }
+
+  .fk-main {
+    padding-bottom: 32px;
+  }
+
+  .fk-break-card,
+  .fk-stuck-card {
+    display: block;
+  }
+}
+
+@media (max-width: 640px) {
+  .fk-stuck-card .fk-card-h {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .fk-stuck-card .fk-tablewrap {
+    overflow-x: visible;
+  }
+
+  .fk-stuck-card .fk-stuck-table {
+    min-width: 0;
+  }
+
+  .fk-stuck-card .fk-stuck-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+
+  .fk-stuck-card .fk-stuck-table,
+  .fk-stuck-card .fk-stuck-table tbody,
+  .fk-stuck-card .fk-stuck-table tr,
+  .fk-stuck-card .fk-stuck-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .fk-stuck-card .fk-stuck-table tr {
+    margin-bottom: 10px;
+    padding: 6px 14px;
+    border: 1px solid var(--fk-line);
+    border-radius: 16px;
+    background: var(--fk-card-2);
+  }
+
+  .fk-stuck-card .fk-stuck-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
+    border-top: 1px solid var(--fk-line);
+    text-align: right;
+  }
+
+  .fk-stuck-card .fk-stuck-table td:first-child {
+    border-top: 0;
+  }
+
+  .fk-stuck-card .fk-stuck-table td::before {
+    content: attr(data-label);
+    flex-shrink: 0;
+    font-size: 12px;
+    font-weight: 600;
+    opacity: 0.85;
+    text-align: left;
+  }
+}

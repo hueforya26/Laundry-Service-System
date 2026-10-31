@@ -166,10 +166,10 @@
 
     body.innerHTML = shown.map(function (x) {
       var o = x.o;
-      return '<tr><td>' + esc(o.name) + '</td><td>' + esc(o.service) + '</td><td>' + peso(o.price) + '</td>' +
-        '<td><span class="fk-badge ' + (o.ready ? 'fk-b-ready' : 'fk-b-pending') + '">' +
+      return '<tr><td data-label="Customer">' + esc(o.name) + '</td><td data-label="Service">' + esc(o.service) + '</td><td data-label="Price">' + peso(o.price) + '</td>' +
+        '<td data-label="Status"><span class="fk-badge ' + (o.ready ? 'fk-b-ready' : 'fk-b-pending') + '">' +
         (o.ready ? 'Ready to pick up' : 'Pending') + '</span></td>' +
-        '<td><span class="fk-badge ' + (x.days >= 4 ? 'fk-d-late' : 'fk-d-warn') + '">' +
+        '<td data-label="Waiting"><span class="fk-badge ' + (x.days >= 4 ? 'fk-d-late' : 'fk-d-warn') + '">' +
         x.days + ' day' + (x.days === 1 ? '' : 's') + '</span></td></tr>';
     }).join('');
   }
