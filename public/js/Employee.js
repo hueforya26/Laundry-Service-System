@@ -263,7 +263,7 @@ document.addEventListener("DOMContentLoaded", () => {
     refreshButton.disabled = true;
     refreshButton.innerHTML = '<span aria-hidden="true">↻</span> Refreshing…';
     try {
-      const data = await apiRequest("/customers?scope=all");
+      const data = await apiRequest("/customers?scope=month");
       if (!Array.isArray(data)) throw new Error("The service returned an invalid customer list.");
       customers = data;
       renderCustomers();

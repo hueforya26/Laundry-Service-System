@@ -115,9 +115,12 @@ app.get("/api/admin/verify", requireAdmin, (req, res) => {
 });
 
 app.get("/customers", adminOnlyForAll, async (req, res) => {
+  // "all" is admin-only (enforced above); "month" is the employee view (this month's orders).
   const conditions =
     req.query.scope === "all"
       ? ""
+      : req.query.scope === "month"
+      ? "WHERE date_trunc('month', o.created_at AT TIME ZONE 'Asia/Manila') = date_trunc('month', now() AT TIME ZONE 'Asia/Manila')"
       : "WHERE o.created_at::date = CURRENT_DATE";
 
   const sql = `
