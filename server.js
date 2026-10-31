@@ -2,6 +2,7 @@ const express = require("express");
 const { Pool, types } = require("pg");
 const cors = require("cors");
 const path = require("path");
+const { createClient } = require("@supabase/supabase-js");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -30,7 +31,90 @@ db.query("SELECT 1")
     )
   );
 
-app.get("/customers", async (req, res) => {
+// ---------- Admin login (Supabase Auth) ----------
+// Env vars (all optional for the rest of the app; admin login is disabled without them):
+//   SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY  -> public values, also handed to the browser
+//   ADMIN_EMAIL                             -> the admin account; the dashboard only asks for its password
+const { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, ADMIN_EMAIL } = process.env;
+const adminConfigured = Boolean(SUPABASE_URL && SUPABASE_PUBLISHABLE_KEY && ADMIN_EMAIL);
+
+const supabaseAuth = adminConfigured
+  ? createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+      auth: { persistSession: false, autoRefreshToken: false },
+    })
+  : null;
+
+console.log("Admin login configured:", adminConfigured);
+
+// Checks the Supabase session token, then the role in public.users.
+async function getAdminFromToken(token) {
+  const { data, error } = await supabaseAuth.auth.getUser(token);
+  const user = data && data.user;
+  if (error || !user) {
+    return { status: 401, message: "Invalid or expired session." };
+  }
+
+  const result = await db.query(
+    "SELECT role, is_active FROM public.users WHERE id = $1",
+    [user.id]
+  );
+  const profile = result.rows[0];
+
+  if (!profile) {
+    return { status: 403, message: "Admin account not found." };
+  }
+  if (profile.role !== "admin" || profile.is_active !== true) {
+    return { status: 403, message: "You do not have admin access." };
+  }
+  return { user, profile };
+}
+
+async function requireAdmin(req, res, next) {
+  if (!adminConfigured) {
+    return res.status(503).json({ message: "Admin login is not configured on the server." });
+  }
+
+  const header = req.headers.authorization || "";
+  if (!header.startsWith("Bearer ")) {
+    return res.status(401).json({ message: "Admin login required." });
+  }
+
+  try {
+    const result = await getAdminFromToken(header.slice(7));
+    if (result.status) {
+      return res.status(result.status).json({ message: result.message });
+    }
+    req.admin = result;
+    next();
+  } catch (err) {
+    console.error("Admin verification failed:", err.code || "", err.message);
+    res.status(500).json({ message: "Could not verify admin access." });
+  }
+}
+
+// Only the "all orders" view is admin-only; the employee page keeps using today's list.
+function adminOnlyForAll(req, res, next) {
+  if (req.query.scope === "all") return requireAdmin(req, res, next);
+  next();
+}
+
+// Public values the login page needs (the publishable key is safe to expose).
+app.get("/api/admin/config", (req, res) => {
+  if (!adminConfigured) {
+    return res.status(503).json({ message: "Admin login is not configured on the server." });
+  }
+  res.json({
+    supabaseUrl: SUPABASE_URL,
+    supabaseKey: SUPABASE_PUBLISHABLE_KEY,
+    adminEmail: ADMIN_EMAIL,
+  });
+});
+
+app.get("/api/admin/verify", requireAdmin, (req, res) => {
+  res.json({ message: "Admin verified.", role: req.admin.profile.role });
+});
+
+app.get("/customers", adminOnlyForAll, async (req, res) => {
   const conditions =
     req.query.scope === "all"
       ? ""

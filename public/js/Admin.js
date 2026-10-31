@@ -6,9 +6,13 @@
 
 
   var DEFAULT_API = 'https://laundry-service-system-production.up.railway.app';
-  var servedFromRailway = /^https?:$/.test(location.protocol) && /\.up\.railway\.app$/i.test(location.hostname);
+  var servedFromRailway = /^https?:$/.test(location.protocol) && (/\.up\.railway\.app$/i.test(location.hostname) ||
+    (/^(localhost|127\.0\.0\.1)$/.test(location.hostname) && location.port === '3000'));
   var API_BASE = (window.LAUNDRY_API_URL || (servedFromRailway ? location.origin : DEFAULT_API)).replace(/\/+$/, '');
   if (!/^https?:\/\//i.test(API_BASE)) API_BASE = 'https://' + API_BASE;
+  var adminAccessToken = null;
+  var supabaseClient = null;
+  var adminConfigPromise = null;
 
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
@@ -70,8 +74,14 @@
 
   function loadOrders() {
     loadState = 'loading';
-    return fetch(API_BASE + '/customers?scope=all', { headers: { Accept: 'application/json' } })
+    return fetch(API_BASE + '/customers?scope=all', {
+      headers: { Accept: 'application/json', Authorization: 'Bearer ' + adminAccessToken }
+    })
       .then(function (res) {
+        if (res.status === 401 || res.status === 403) {
+          endSession('Session expired. Please log in again.');
+          throw new Error('Session expired.');
+        }
         if (!res.ok) throw new Error('The server answered with ' + res.status + '.');
         return res.json();
       })
@@ -494,7 +504,6 @@
 
 
   
-  var ADMIN_PASSWORD = 'admin123';
   var login = document.getElementById('adminLogin');
   var dash = document.getElementById('adminDashboard');
   var form = document.getElementById('adminLoginForm');
@@ -510,21 +519,84 @@
     window.dispatchEvent(new Event('resize'));
   }
 
+  function readJson(res) {
+    return res.json().catch(function () { return {}; });
+  }
+
+  // Loads the Supabase settings from the server once and creates the browser client.
+  function getSupabase() {
+    if (!adminConfigPromise) {
+      adminConfigPromise = fetch(API_BASE + '/api/admin/config', { headers: { Accept: 'application/json' } })
+        .then(function (res) {
+          return readJson(res).then(function (cfg) {
+            if (!res.ok || !cfg.supabaseUrl) {
+              throw new Error(cfg.message || 'Admin login is unavailable (' + res.status + ').');
+            }
+            if (!window.supabase) throw new Error('Could not load the login library. Check your connection.');
+            supabaseClient = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseKey);
+            return { client: supabaseClient, email: cfg.adminEmail };
+          });
+        })
+        .catch(function (err) {
+          adminConfigPromise = null;
+          throw err;
+        });
+    }
+    return adminConfigPromise;
+  }
+
+  // Asks the server whether this token belongs to an active admin.
+  function verifyAdmin(token) {
+    return fetch(API_BASE + '/api/admin/verify', { headers: { Authorization: 'Bearer ' + token } })
+      .then(function (res) {
+        return readJson(res).then(function (body) {
+          if (!res.ok) throw new Error(body.message || 'Admin access denied.');
+        });
+      });
+  }
+
+  function endSession(message) {
+    adminAccessToken = null;
+    if (supabaseClient) supabaseClient.auth.signOut().catch(function () {});
+    setLocked(true);
+    if (message) msg.textContent = message;
+  }
+
   form.addEventListener('submit', function (e) {
     e.preventDefault();
-    if (pw.value === ADMIN_PASSWORD) {
-      msg.textContent = '';
-      pw.value = '';
-      setLocked(false);
-      loadOrders();
-    } else {
-      msg.textContent = 'Incorrect password.';
-    }
+    msg.textContent = 'Verifying admin account...';
+
+    getSupabase()
+      .then(function (s) {
+        return s.client.auth.signInWithPassword({ email: s.email, password: pw.value })
+          .then(function (r) {
+            if (r.error || !r.data || !r.data.session) throw new Error('Incorrect password.');
+            var token = r.data.session.access_token;
+            return verifyAdmin(token).then(function () { return token; });
+          })
+          .catch(function (err) {
+            s.client.auth.signOut().catch(function () {});
+            throw err;
+          });
+      })
+      .then(function (token) {
+        adminAccessToken = token;
+        msg.textContent = '';
+        pw.value = '';
+        setLocked(false);
+        loadOrders();
+      })
+      .catch(function (err) {
+        adminAccessToken = null;
+        msg.textContent = (err && err.message) || 'Login failed. Please try again.';
+      });
   });
 
 
   $('#fkLogout').addEventListener('click', function () {
-    window.location.href = 'index.html';
+    var go = function () { window.location.href = 'index.html'; };
+    if (!supabaseClient) return go();
+    supabaseClient.auth.signOut().then(go, go);
   });
 
   document.addEventListener('visibilitychange', function () {
@@ -533,4 +605,20 @@
 
   setLocked(true);
   renderSales();
+
+  getSupabase()
+    .then(function (s) {
+      return s.client.auth.getSession().then(function (r) {
+        var session = r.data && r.data.session;
+        if (!session) return;
+        return verifyAdmin(session.access_token).then(function () {
+          adminAccessToken = session.access_token;
+          setLocked(false);
+          loadOrders();
+        }, function () {
+          return s.client.auth.signOut();
+        });
+      });
+    })
+    .catch(function () { /* stay on the login screen */ });
 })();
